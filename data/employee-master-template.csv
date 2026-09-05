@@ -1,0 +1,2 @@
+employeeNumber,firstName,lastName,jobTitle,reportingRole,department,section,operation,supervisorEmployeeNo,employmentStatus,shiftGroup,workLocation,badgeId,mobileNumber,email,sourceSystem,sourceRecordId,effectiveFrom,effectiveTo,lastUpdatedAt
+104782,Thabo,Mokoena,Engineering Artisan Mechanical UG,FITTER,Engineering,Section 3,North Mine,107199,ACTIVE,B,Underground,CARD-104782,,,SAP,104782,2026-01-01,,2026-09-05T18:00:00+02:00

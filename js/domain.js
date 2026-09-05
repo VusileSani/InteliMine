@@ -1,5 +1,6 @@
 import { EMPLOYEES, DEMO_ATTENDANCE } from "./demoData.js";
 import { APP_CONFIG } from "./config.js";
+import { employeeDisplayName, isEmployeeActive, reportingRoleLabel } from "./employeeMaster.js";
 
 export function findEmployeeByNumber(employeeNumber) {
   return EMPLOYEES.find(employee => employee.employeeNumber === String(employeeNumber).trim()) || null;
@@ -7,8 +8,12 @@ export function findEmployeeByNumber(employeeNumber) {
 
 export function authenticateEmployee(employeeNumber, pin) {
   const employee = findEmployeeByNumber(employeeNumber);
-  if (!employee || !employee.active) return null;
+  if (!employee || !isEmployeeActive(employee)) return null;
   return employee.pin === String(pin).trim() ? employee : null;
+}
+
+export function reportingEmployees() {
+  return EMPLOYEES.filter(isEmployeeActive);
 }
 
 export function attendanceFor(employeeId) {
@@ -59,8 +64,8 @@ export function buildOperationalEvents(state) {
         if (!detail) return;
         events.push({
           employeeId: employee.id,
-          employeeName: employee.name,
-          role: employee.role,
+          employeeName: employeeDisplayName(employee),
+          role: reportingRoleLabel(employee.reportingRole),
           severity,
           category,
           title,

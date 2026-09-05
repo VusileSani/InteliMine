@@ -1,6 +1,6 @@
 import { DEMO_INITIAL_SUBMISSIONS } from "./demoData.js";
 
-const STORAGE_KEY = "mining_shift_intelligence_v1";
+const STORAGE_KEY = "mining_shift_intelligence_v1_1";
 
 function clone(value) {
   return JSON.parse(JSON.stringify(value));

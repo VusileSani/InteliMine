@@ -12,7 +12,7 @@
       <div class="eyebrow">Mining Operations</div>
       <h1>Shift Intelligence</h1>
     </div>
-    <div id="topbarStatus" class="topbar-status">V1 Prototype</div>
+    <div id="topbarStatus" class="topbar-status">V1.1 Prototype</div>
   </header>
 
   <main class="shell">
@@ -38,6 +38,7 @@
           <button class="primary" data-route="employee">Employee / Kiosk</button>
           <button data-route="manager">Operations Dashboard</button>
           <button data-route="attendance">T&amp;A Check Simulator</button>
+          <button data-route="integration">Integration Hub</button>
           <button class="secondary" id="resetDemoButton">Reset Demo Data</button>
         </div>
       </div>
@@ -94,6 +95,17 @@
         <button id="taCheckButton" class="primary">Check reporting status</button>
         <div id="taCheckResult"></div>
       </div>
+    </section>
+
+    <section id="integrationView" class="view hidden">
+      <div class="view-header">
+        <button class="link-button" data-route="home">← Home</button>
+        <div>
+          <div class="eyebrow">Enterprise Integration</div>
+          <h2>Integration Hub</h2>
+        </div>
+      </div>
+      <div id="integrationHub"></div>
     </section>
   </main>
 

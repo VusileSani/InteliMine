@@ -2,6 +2,7 @@ import { loadState, saveState, resetState } from "./store.js";
 import { bindEmployeeExperience } from "./employee.js";
 import { renderDashboard, bindDashboardActions } from "./dashboard.js";
 import { bindAttendanceSimulator } from "./attendance.js";
+import { renderIntegrationHub } from "./integration.js";
 
 let state = loadState();
 
@@ -26,15 +27,17 @@ const views = {
   home: document.getElementById("homeView"),
   employee: document.getElementById("employeeView"),
   manager: document.getElementById("managerView"),
-  attendance: document.getElementById("attendanceView")
+  attendance: document.getElementById("attendanceView"),
+  integration: document.getElementById("integrationView")
 };
 
 function route(target) {
   Object.values(views).forEach(view => view.classList.add("hidden"));
   const selected = views[target] || views.home;
   selected.classList.remove("hidden");
-  document.getElementById("topbarStatus").textContent = target === "home" ? "V1 Prototype" : selected.querySelector(".eyebrow")?.textContent || "V1 Prototype";
+  document.getElementById("topbarStatus").textContent = target === "home" ? "V1.1 Prototype" : selected.querySelector(".eyebrow")?.textContent || "V1.1 Prototype";
   if (target === "manager") renderDashboard(state);
+  if (target === "integration") renderIntegrationHub();
   if (target === "employee") employeeExperience.reset();
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -54,4 +57,5 @@ document.getElementById("resetDemoButton").addEventListener("click", () => {
 });
 
 renderDashboard(state);
+renderIntegrationHub();
 route("home");

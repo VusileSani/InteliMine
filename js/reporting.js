@@ -1,4 +1,5 @@
 import { REPORT_SCHEMAS } from "./reportSchemas.js";
+import { reportingRoleLabel } from "./employeeMaster.js";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -10,7 +11,8 @@ function escapeHtml(value) {
 }
 
 export function renderReportForm(employee, existingSubmission) {
-  const schema = REPORT_SCHEMAS[employee.role] || [];
+  const roleCode = employee.reportingRole;
+  const schema = REPORT_SCHEMAS[roleCode] || [];
   const answers = existingSubmission?.answers || {};
 
   const fields = schema.map(field => {
@@ -45,11 +47,15 @@ export function renderReportForm(employee, existingSubmission) {
       </div>`;
   }).join("");
 
+  if (!schema.length) {
+    return `<div class="card"><div class="status-box danger">No reporting schema is configured for ${escapeHtml(roleCode || "this employee")}.</div></div>`;
+  }
+
   return `
     <form id="shiftReportForm" class="card">
       <div class="section-title">
         <div>
-          <div class="eyebrow">${escapeHtml(employee.role)} report</div>
+          <div class="eyebrow">${escapeHtml(reportingRoleLabel(roleCode))} report</div>
           <h3>Compulsory shift handover</h3>
         </div>
         <span class="badge outstanding">Required</span>
@@ -64,8 +70,8 @@ export function renderReportForm(employee, existingSubmission) {
     </form>`;
 }
 
-export function readReportAnswers(form, role) {
-  const schema = REPORT_SCHEMAS[role] || [];
+export function readReportAnswers(form, roleCode) {
+  const schema = REPORT_SCHEMAS[roleCode] || [];
   const answers = {};
   const missing = [];
 

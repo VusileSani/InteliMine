@@ -1,6 +1,6 @@
 import { APP_CONFIG } from "./config.js";
-import { EMPLOYEES } from "./demoData.js";
-import { reportingStatus, mayClockOff, buildOperationalEvents, submissionFor, overrideFor } from "./domain.js";
+import { reportingStatus, mayClockOff, buildOperationalEvents, submissionFor, reportingEmployees } from "./domain.js";
+import { employeeDisplayName, reportingRoleLabel } from "./employeeMaster.js";
 
 function formatTime(value) {
   if (!value) return "—";
@@ -13,20 +13,21 @@ function statusBadge(status) {
 
 export function renderDashboard(state) {
   const host = document.getElementById("managerDashboard");
-  const statuses = EMPLOYEES.map(employee => ({ employee, status: reportingStatus(state, employee.id) }));
+  const employees = reportingEmployees();
+  const statuses = employees.map(employee => ({ employee, status: reportingStatus(state, employee.id) }));
   const complete = statuses.filter(item => item.status === "complete").length;
   const outstanding = statuses.filter(item => item.status === "outstanding").length;
   const overrides = statuses.filter(item => item.status === "excused").length;
   const events = buildOperationalEvents(state);
   const safetyCount = events.filter(event => event.category === "Safety").length;
   const equipmentCount = events.filter(event => ["Equipment", "Electrical"].includes(event.category)).length;
-  const completion = Math.round((complete / EMPLOYEES.length) * 100);
+  const completion = employees.length ? Math.round((complete / employees.length) * 100) : 0;
 
   host.innerHTML = `
     <div class="metrics">
       ${metric("Safety", safetyCount, "Reported concerns")}
       ${metric("Equipment", equipmentCount, "Mechanical / electrical")}
-      ${metric("Shift Compliance", `${completion}%`, `${complete} of ${EMPLOYEES.length} complete`)}
+      ${metric("Shift Compliance", `${completion}%`, `${complete} of ${employees.length} complete`)}
       ${metric("Outstanding", outstanding, `${overrides} supervisor override${overrides === 1 ? "" : "s"}`)}
     </div>
 
@@ -41,8 +42,8 @@ export function renderDashboard(state) {
                 const submission = submissionFor(state, employee.id);
                 const clock = mayClockOff(state, employee.id);
                 return `<tr>
-                  <td><strong>${employee.name}</strong><br /><span class="muted">${employee.employeeNumber}</span></td>
-                  <td>${employee.role}</td>
+                  <td><strong>${employeeDisplayName(employee)}</strong><br /><span class="muted">${employee.employeeNumber}</span></td>
+                  <td>${reportingRoleLabel(employee.reportingRole)}</td>
                   <td>${statusBadge(status)}</td>
                   <td>${submission ? formatTime(submission.completedAt) : "—"}</td>
                   <td>${clock.allowed ? "✓ Allowed" : "⚠ Blocked"}</td>
@@ -72,7 +73,7 @@ export function renderDashboard(state) {
         <label>Employee
           <select id="overrideEmployee">
             <option value="">Choose employee</option>
-            ${EMPLOYEES.filter(employee => reportingStatus(state, employee.id) === "outstanding").map(employee => `<option value="${employee.id}">${employee.name} · ${employee.role}</option>`).join("")}
+            ${employees.filter(employee => reportingStatus(state, employee.id) === "outstanding").map(employee => `<option value="${employee.id}">${employeeDisplayName(employee)} · ${reportingRoleLabel(employee.reportingRole)}</option>`).join("")}
           </select>
         </label>
         <label>Approver employee number<input id="overrideApprover" placeholder="Supervisor employee number" /></label>
