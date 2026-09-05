@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mining Shift Intelligence</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">Mining Operations</div>
+      <h1>Shift Intelligence</h1>
+    </div>
+    <div id="topbarStatus" class="topbar-status">V1 Prototype</div>
+  </header>
+
+  <main class="shell">
+    <section id="homeView" class="view">
+      <div class="hero-grid">
+        <div class="card hero-copy">
+          <div class="eyebrow">Operational memory, captured every shift</div>
+          <h2>Attendance proves presence.<br />Reporting proves handover.</h2>
+          <p>
+            Employees complete a compulsory role-specific shift report from a kiosk or their own phone.
+            The Time & Attendance system can then verify that the reporting obligation is complete before clock-off.
+          </p>
+          <div class="principles">
+            <span>Compulsory reporting</span>
+            <span>Role-aware capture</span>
+            <span>Supervisor override</span>
+            <span>T&amp;A integration boundary</span>
+          </div>
+        </div>
+
+        <div class="card access-card">
+          <h3>Choose an experience</h3>
+          <button class="primary" data-route="employee">Employee / Kiosk</button>
+          <button data-route="manager">Operations Dashboard</button>
+          <button data-route="attendance">T&amp;A Check Simulator</button>
+          <button class="secondary" id="resetDemoButton">Reset Demo Data</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="employeeView" class="view hidden">
+      <div class="view-header">
+        <button class="link-button" data-route="home">← Home</button>
+        <div>
+          <div class="eyebrow">Employee / Kiosk</div>
+          <h2>Shift Report</h2>
+        </div>
+      </div>
+
+      <div id="employeeLoginCard" class="card narrow-card">
+        <h3>Identify employee</h3>
+        <p class="muted">Prototype login uses employee number and PIN. The same flow can later be linked to card/badge readers.</p>
+        <label>Employee number<input id="employeeNumber" inputmode="numeric" placeholder="e.g. 104782" /></label>
+        <label>PIN<input id="employeePin" type="password" inputmode="numeric" placeholder="4 digits" /></label>
+        <button id="employeeLoginButton" class="primary">Sign in</button>
+        <div id="employeeLoginStatus"></div>
+        <details class="demo-credentials">
+          <summary>Demo credentials</summary>
+          <p>104782 / 1111 · Fitter<br />105310 / 2222 · Electrician<br />106004 / 3333 · Safety<br />107199 / 4444 · Supervisor<br />108022 / 5555 · Operator</p>
+        </details>
+      </div>
+
+      <div id="employeeWorkspace" class="hidden"></div>
+    </section>
+
+    <section id="managerView" class="view hidden">
+      <div class="view-header">
+        <button class="link-button" data-route="home">← Home</button>
+        <div>
+          <div class="eyebrow">Management</div>
+          <h2>Operations Dashboard</h2>
+        </div>
+      </div>
+      <div id="managerDashboard"></div>
+    </section>
+
+    <section id="attendanceView" class="view hidden">
+      <div class="view-header">
+        <button class="link-button" data-route="home">← Home</button>
+        <div>
+          <div class="eyebrow">External System Boundary</div>
+          <h2>Time &amp; Attendance Check</h2>
+        </div>
+      </div>
+
+      <div class="card narrow-card">
+        <p class="muted">This simulates the separate T&amp;A system asking one question: may this employee clock off?</p>
+        <label>Employee number<input id="taEmployeeNumber" inputmode="numeric" placeholder="e.g. 104782" /></label>
+        <button id="taCheckButton" class="primary">Check reporting status</button>
+        <div id="taCheckResult"></div>
+      </div>
+    </section>
+  </main>
+
+  <template id="metricTemplate">
+    <div class="metric-card">
+      <div class="metric-label"></div>
+      <div class="metric-value"></div>
+      <div class="metric-note"></div>
+    </div>
+  </template>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
