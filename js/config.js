@@ -1,8 +1,23 @@
 export const APP_CONFIG = Object.freeze({
-  operationName: "Demo Mine",
-  areaName: "Section 3",
+  productName: "InteliMine",
+  version: "1.3",
+  releaseName: "Analytics Integrity",
+  dataContractVersion: "1.1",
+  reportSchemaVersion: "1.3",
+  eventTaxonomyVersion: "1.1",
+  masterDataVersion: "1.0",
+  operationId: "OP-DEMO",
+  defaultAreaId: "AREA-SEC3",
+  shiftInstanceId: "SHIFT-NS-20260905",
   shiftId: "NS-20260905",
   shiftName: "Night Shift",
-  shiftDate: "05 Sep 2026",
-  reportDueLabel: "Before clock-off"
+  shiftBusinessDate: "2026-09-05",
+  shiftDateLabel: "05 Sep 2026",
+  shiftStartLocal: "2026-09-05T18:00:00+02:00",
+  shiftEndLocal: "2026-09-06T06:00:00+02:00",
+  operationTimezone: "Africa/Johannesburg",
+  operationUtcOffset: "+02:00",
+  reportDueLabel: "Before clock-off",
+  defaultCaptureChannel: "KIOSK",
+  defaultCapturePointId: "KIOSK-DEMO-01"
 });

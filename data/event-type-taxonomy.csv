@@ -1,0 +1,7 @@
+eventTypeId,eventCategoryId,eventTypeName,requiresEquipment,applicableRoles,active
+EVT-VIBRATION,EQUIPMENT,Abnormal vibration,true,FITTER|OPERATOR,true
+EVT-OVERHEATING,EQUIPMENT,Overheating / high temperature,true,FITTER|ELECTRICIAN|OPERATOR,true
+EVT-ELECTRICAL-FAULT,ELECTRICAL,Electrical fault / abnormality,true,ELECTRICIAN,true
+EVT-HAZARD,SAFETY,Hazard / unsafe condition,false,SAFETY_OFFICER|SUPERVISOR|OPERATOR,true
+EVT-NEAR-MISS,SAFETY,Near miss,false,SAFETY_OFFICER|SUPERVISOR,true
+EVT-PROD-DELAY,OPERATIONS,Production / operational delay,false,SUPERVISOR|OPERATOR,true

@@ -1,20 +1,12 @@
-# InteliMine Integration Hub — Design Note
+# Integration Hub
 
-The Integration Hub is the translation boundary between enterprise source systems and InteliMine's domain model.
+The Integration Hub isolates external source systems from InteliMine's canonical model.
 
-## Responsibilities
-- Receive employee master data from approved enterprise sources.
-- Map source field names into the canonical Employee Master contract.
-- Map official job titles into InteliMine reporting roles.
-- Validate required fields.
-- Surface unmapped roles and invalid records as exceptions.
-- Reconcile updates without deleting historical employee identity.
-- Expose integration health and audit information to administrators.
+Preferred ingestion lifecycle:
 
-## Not responsibilities
-- It is not the HR source of truth.
-- It does not replace SAP or the customer's HR system.
-- It does not own timekeeping.
-- It does not invent reporting roles for unknown titles.
+RECEIVED → VALIDATED → APPLIED
+                ↘ REJECTED / QUARANTINED
 
-This separation lets SAP, CSV, SFTP, middleware, APIs, and future systems all feed the same InteliMine core without changing the reporting engine.
+No source-system record should silently change canonical operational data before validation and mapping succeed.
+
+The hub is vendor neutral. HR/ERP, T&A, roster, asset and middleware sources can use different adapters while InteliMine continues to consume the same canonical contracts.

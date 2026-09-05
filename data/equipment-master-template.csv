@@ -1,0 +1,3 @@
+equipmentId,equipmentCode,equipmentName,equipmentClass,areaId,active,sourceSystem,sourceRecordId,effectiveFrom,effectiveTo
+EQ-CV04,CV-04,Conveyor CV-04,CONVEYOR,AREA-CONVEYOR,true,SAP_PM,000000000000104782,2026-01-01,
+EQ-P18,P-18,Pump P-18,PUMP,AREA-SEC3,true,SAP_PM,000000000000105310,2026-01-01,

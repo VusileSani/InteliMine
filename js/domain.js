@@ -1,9 +1,13 @@
 import { EMPLOYEES, DEMO_ATTENDANCE } from "./demoData.js";
 import { APP_CONFIG } from "./config.js";
-import { employeeDisplayName, isEmployeeActive, reportingRoleLabel } from "./employeeMaster.js";
+import { isEmployeeActive } from "./employeeMaster.js";
 
 export function findEmployeeByNumber(employeeNumber) {
   return EMPLOYEES.find(employee => employee.employeeNumber === String(employeeNumber).trim()) || null;
+}
+
+export function employeeById(employeeId) {
+  return EMPLOYEES.find(employee => employee.id === employeeId) || null;
 }
 
 export function authenticateEmployee(employeeNumber, pin) {
@@ -12,25 +16,40 @@ export function authenticateEmployee(employeeNumber, pin) {
   return employee.pin === String(pin).trim() ? employee : null;
 }
 
-export function reportingEmployees() {
-  return EMPLOYEES.filter(isEmployeeActive);
+export function attendanceFor(employeeId) {
+  return DEMO_ATTENDANCE.find(entry => entry.employeeId === employeeId && entry.shiftInstanceId === APP_CONFIG.shiftInstanceId) || null;
 }
 
-export function attendanceFor(employeeId) {
-  return DEMO_ATTENDANCE.find(entry => entry.employeeId === employeeId) || null;
+export function reportingObligations(state) {
+  return (state.obligations || []).filter(item => item.reportingRequired && item.shiftInstanceId === APP_CONFIG.shiftInstanceId);
+}
+
+export function obligationFor(state, employeeId) {
+  return reportingObligations(state).find(item => item.employeeId === employeeId) || null;
+}
+
+export function reportingEmployees(state) {
+  const employeeIds = new Set(reportingObligations(state).map(item => item.employeeId));
+  return EMPLOYEES.filter(employee => employeeIds.has(employee.id));
 }
 
 export function submissionFor(state, employeeId) {
-  return state.submissions.find(submission => submission.employeeId === employeeId) || null;
+  const obligation = obligationFor(state, employeeId);
+  if (!obligation) return null;
+  return (state.submissions || []).find(submission => submission.obligationId === obligation.obligationId) || null;
 }
 
 export function overrideFor(state, employeeId) {
-  return [...state.overrides].reverse().find(override => override.employeeId === employeeId && override.shiftId === APP_CONFIG.shiftId) || null;
+  const obligation = obligationFor(state, employeeId);
+  if (!obligation) return null;
+  return [...(state.overrides || [])].reverse().find(override => override.obligationId === obligation.obligationId) || null;
 }
 
 export function reportingStatus(state, employeeId) {
+  const obligation = obligationFor(state, employeeId);
+  if (!obligation) return "not_required";
   const submission = submissionFor(state, employeeId);
-  if (submission?.status === "complete") return "complete";
+  if (submission?.status === "COMPLETE") return "complete";
   if (overrideFor(state, employeeId)) return "excused";
   return "outstanding";
 }
@@ -38,49 +57,40 @@ export function reportingStatus(state, employeeId) {
 export function mayClockOff(state, employeeId) {
   const attendance = attendanceFor(employeeId);
   if (!attendance?.clockedIn) {
-    return { allowed: true, reason: "Employee is not currently clocked in." };
+    return { allowed: true, reason: "Employee is not currently clocked in.", code: "NOT_CLOCKED_IN" };
+  }
+
+  const obligation = obligationFor(state, employeeId);
+  if (!obligation) {
+    return { allowed: false, reason: "Clock-in exists but no reporting obligation was generated. Supervisor review is required.", code: "OBLIGATION_MISSING" };
   }
 
   const status = reportingStatus(state, employeeId);
   if (status === "complete") {
-    return { allowed: true, reason: "Required shift report is complete." };
+    return { allowed: true, reason: "Required shift report is complete.", code: "REPORT_COMPLETE" };
   }
   if (status === "excused") {
-    return { allowed: true, reason: "Supervisor-authorised reporting override is recorded." };
+    return { allowed: true, reason: "Supervisor-authorised reporting override is recorded.", code: "OVERRIDE_APPROVED" };
   }
-  return { allowed: false, reason: "Required shift report is still outstanding." };
+  return { allowed: false, reason: "Required shift report is still outstanding.", code: "REPORT_OUTSTANDING" };
 }
 
-export function buildOperationalEvents(state) {
-  return state.submissions
-    .filter(submission => submission.status === "complete")
-    .flatMap(submission => {
-      const employee = EMPLOYEES.find(item => item.id === submission.employeeId);
-      if (!employee) return [];
-      const answers = submission.answers || {};
-      const events = [];
+export function currentShiftObservations(state) {
+  return (state.observations || [])
+    .filter(observation => observation.shiftInstanceId === APP_CONFIG.shiftInstanceId)
+    .sort((a, b) => new Date(b.reportedAt) - new Date(a.reportedAt));
+}
 
-      const push = (severity, category, title, detail) => {
-        if (!detail) return;
-        events.push({
-          employeeId: employee.id,
-          employeeName: employeeDisplayName(employee),
-          role: reportingRoleLabel(employee.reportingRole),
-          severity,
-          category,
-          title,
-          detail,
-          completedAt: submission.completedAt
-        });
-      };
+export function currentIssues(state) {
+  return (state.issues || [])
+    .filter(issue => issue.operationId === APP_CONFIG.operationId)
+    .sort((a, b) => new Date(b.openedAt) - new Date(a.openedAt));
+}
 
-      if (answers.equipmentConcern === "yes") push("medium", "Equipment", answers.equipmentWorkedOn || "Equipment concern", answers.equipmentCondition);
-      if (answers.electricalConcern === "yes") push("medium", "Electrical", answers.equipmentWorkedOn || "Electrical concern", answers.electricalCondition);
-      if (answers.hazardsObserved === "yes") push("high", "Safety", "Hazard reported", answers.hazardDetails);
-      if (answers.incidentOrNearMiss === "yes") push("high", "Safety", "Incident / near miss", answers.correctiveAction || "Reported");
-      if (answers.operationalDelay === "yes") push("medium", "Operations", "Operational delay", answers.constraints || answers.productionStatus);
-      if (answers.abnormalCondition === "yes") push("medium", "Operations", answers.workArea || "Abnormal condition", answers.conditionDetails);
-      return events;
-    })
-    .sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
+export function openIssues(state) {
+  return currentIssues(state).filter(issue => !["RESOLVED", "CLOSED"].includes(issue.currentStatus));
+}
+
+export function observationById(state, observationId) {
+  return (state.observations || []).find(item => item.observationId === observationId) || null;
 }

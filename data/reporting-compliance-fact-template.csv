@@ -1,0 +1,2 @@
+obligationId,shiftInstanceId,shiftId,shiftBusinessDate,employeeNumber,reportingRoleId,departmentId,reportingRequired,obligationCreatedFrom,sourceAttendanceId,reportingStatus,submissionId,completedAtUtc,structuredCheckCount,observationCount,issueCount,overrideApplied,clockOffAllowed,clockOffDecisionCode
+OBL-001,SHIFT-001,NS-20260905,2026-09-05,104782,FITTER,DEPT-ENG,true,ATTENDANCE_CLOCK_IN,ATT-104782,COMPLETE,SUB-001,2026-09-05T16:47:00Z,5,1,1,false,true,REPORT_COMPLETE

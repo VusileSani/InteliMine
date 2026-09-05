@@ -1,0 +1,2 @@
+batchId,entityType,sourceSystem,receivedAt,status,receivedCount,validCount,rejectedCount,appliedCount,errorSummary
+IMP-EMP-001,EMPLOYEE_MASTER,HR_SYSTEM,2026-09-05T13:00:00Z,APPLIED,5000,4998,2,4998,2 records quarantined for mapping errors

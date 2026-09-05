@@ -1,0 +1,3 @@
+areaId,areaCode,areaName,operationId,parentAreaId,active,sourceSystem,sourceRecordId,effectiveFrom,effectiveTo
+AREA-SEC3,SEC-003,Section 3,OP-DEMO,,true,SAP,SEC003,2026-01-01,
+AREA-PANEL-B,PNL-B,Panel B,OP-DEMO,AREA-SEC3,true,SAP,PNLB,2026-01-01,

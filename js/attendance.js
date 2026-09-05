@@ -1,4 +1,4 @@
-import { findEmployeeByNumber, reportingStatus, mayClockOff, overrideFor, submissionFor } from "./domain.js";
+import { findEmployeeByNumber, reportingStatus, mayClockOff, overrideFor, submissionFor, obligationFor, attendanceFor } from "./domain.js";
 import { APP_CONFIG } from "./config.js";
 
 export function bindAttendanceSimulator({ getState }) {
@@ -14,19 +14,30 @@ export function bindAttendanceSimulator({ getState }) {
     }
 
     const state = getState();
+    const obligation = obligationFor(state, employee.id);
     const status = reportingStatus(state, employee.id);
     const decision = mayClockOff(state, employee.id);
     const submission = submissionFor(state, employee.id);
     const override = overrideFor(state, employee.id);
+    const attendance = attendanceFor(employee.id);
 
     const payload = {
       employeeNumber: employee.employeeNumber,
+      shiftInstanceId: APP_CONFIG.shiftInstanceId,
       shiftId: APP_CONFIG.shiftId,
-      reportingRequired: true,
+      attendanceRecordId: attendance?.attendanceId || null,
+      reportingObligationId: obligation?.obligationId || null,
+      reportingRequired: Boolean(obligation?.reportingRequired),
       reportingStatus: status.toUpperCase(),
       completedAt: submission?.completedAt || null,
-      override: override ? { approvedAt: override.approvedAt, approverEmployeeNumber: override.approverEmployeeNumber, reason: override.reason } : null,
+      override: override ? {
+        overrideId: override.overrideId,
+        approvedAt: override.approvedAt,
+        approverEmployeeNumber: override.approverEmployeeNumber,
+        reason: override.reason
+      } : null,
       clockOffAllowed: decision.allowed,
+      decisionCode: decision.code,
       reason: decision.reason
     };
 

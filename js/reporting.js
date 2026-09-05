@@ -1,5 +1,7 @@
 import { REPORT_SCHEMAS } from "./reportSchemas.js";
 import { reportingRoleLabel } from "./employeeMaster.js";
+import { renderObservationComposer } from "./observation.js";
+import { EQUIPMENT } from "./masterData.js";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -32,6 +34,28 @@ export function renderReportForm(employee, existingSubmission) {
         </div>`;
     }
 
+    if (field.type === "select") {
+      return `
+        <div class="question" data-question="${escapeHtml(field.key)}">
+          <div class="question-title">${escapeHtml(field.label)}</div>
+          <select name="${escapeHtml(field.key)}">
+            <option value="">Choose</option>
+            ${field.options.map(option => `<option value="${escapeHtml(option.value)}" ${value === option.value ? "selected" : ""}>${escapeHtml(option.label)}</option>`).join("")}
+          </select>
+        </div>`;
+    }
+
+    if (field.type === "equipment") {
+      return `
+        <div class="question" data-question="${escapeHtml(field.key)}">
+          <div class="question-title">${escapeHtml(field.label)}</div>
+          <select name="${escapeHtml(field.key)}">
+            <option value="">Choose equipment</option>
+            ${EQUIPMENT.filter(item => item.active).map(item => `<option value="${escapeHtml(item.id)}" ${value === item.id ? "selected" : ""}>${escapeHtml(item.code)} · ${escapeHtml(item.name)}</option>`).join("")}
+          </select>
+        </div>`;
+    }
+
     if (field.type === "textarea") {
       return `
         <div class="question" data-question="${escapeHtml(field.key)}">
@@ -60,8 +84,11 @@ export function renderReportForm(employee, existingSubmission) {
         </div>
         <span class="badge outstanding">Required</span>
       </div>
-      <p class="muted">Every required question must be answered. “No issues observed” is valid information; leaving the report unsubmitted is not.</p>
-      ${fields}
+      <p class="muted">Every required question becomes a structured check fact. Normal conditions are analytically valuable; leaving the report unsubmitted is not.</p>
+      <div class="role-report-section">
+        ${fields}
+      </div>
+      ${renderObservationComposer(employee)}
       <div id="reportFormStatus"></div>
       <div class="form-actions">
         <button type="button" class="secondary" id="employeeSignOutButton">Sign out</button>
@@ -74,6 +101,7 @@ export function readReportAnswers(form, roleCode) {
   const schema = REPORT_SCHEMAS[roleCode] || [];
   const answers = {};
   const missing = [];
+  let requiresObservation = false;
 
   for (const field of schema) {
     let value = "";
@@ -84,8 +112,10 @@ export function readReportAnswers(form, roleCode) {
     }
 
     if (field.required && !value) missing.push(field.label);
+    if (field.triggersObservation && value === "yes") requiresObservation = true;
+    if (Array.isArray(field.analytics?.abnormalValues) && field.analytics.abnormalValues.includes(value)) requiresObservation = true;
     answers[field.key] = value;
   }
 
-  return { answers, missing };
+  return { answers, missing, requiresObservation };
 }

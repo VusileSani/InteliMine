@@ -1,0 +1,2 @@
+issueId,title,currentStatus,severityId,eventTypeId,operationId,areaId,equipmentId,primaryObservationId,observationCount,openedAtUtc,acknowledgedAtUtc,workStartedAtUtc,resolvedAtUtc,closedAtUtc,minutesToAcknowledge,minutesToStartWork,minutesToResolve
+ISS-001,CV-04 abnormal vibration,IN_PROGRESS,MEDIUM,EVT-VIBRATION,OP-DEMO,AREA-CONVEYOR,EQ-CV04,OBS-001,2,2026-09-05T16:47:00Z,2026-09-05T16:51:00Z,2026-09-05T17:05:00Z,,,,4,18,

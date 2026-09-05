@@ -1,0 +1,2 @@
+obligationId,shiftInstanceId,shiftId,employeeId,reportingRequired,createdAt,createdFrom,sourceAttendanceId,dueBy,dataContractVersion,reportSchemaVersion
+OBL-SHIFT-NS-20260905-104782,SHIFT-NS-20260905,NS-20260905,emp_104782,true,2026-09-05T18:01:00+02:00,ATTENDANCE_CLOCK_IN,ATT-104782,2026-09-06T06:00:00+02:00,1.1,1.3

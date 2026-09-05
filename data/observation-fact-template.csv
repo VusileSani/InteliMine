@@ -1,0 +1,2 @@
+observationId,sourceSubmissionId,obligationId,shiftInstanceId,shiftBusinessDate,employeeNumber,reportingRoleId,departmentId,operationId,areaId,equipmentId,eventTypeId,severityId,actionRequired,issueId,observedAtUtc,localObservedDate,localObservedTime,reportedAtUtc,captureChannel,capturePointId,eventTaxonomyVersion,narrative
+OBS-001,SUB-001,OBL-001,SHIFT-001,2026-09-05,104782,FITTER,DEPT-ENG,OP-DEMO,AREA-CONVEYOR,EQ-CV04,EVT-VIBRATION,MEDIUM,true,ISS-001,2026-09-05T16:35:00Z,2026-09-05,18:35,2026-09-05T16:47:00Z,KIOSK,KIOSK-01,1.1,Abnormal vibration near drive pulley

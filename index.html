@@ -3,33 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mining Shift Intelligence</title>
+  <title>InteliMine · Mining Shift Intelligence</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
   <header class="topbar">
     <div>
-      <div class="eyebrow">Mining Operations</div>
+      <div class="eyebrow">InteliMine · Mining Operations</div>
       <h1>Shift Intelligence</h1>
     </div>
-    <div id="topbarStatus" class="topbar-status">V1.1 Prototype</div>
+    <div id="topbarStatus" class="topbar-status">V1.3 · Analytics Integrity</div>
   </header>
 
   <main class="shell">
     <section id="homeView" class="view">
       <div class="hero-grid">
         <div class="card hero-copy">
-          <div class="eyebrow">Operational memory, captured every shift</div>
-          <h2>Attendance proves presence.<br />Reporting proves handover.</h2>
+          <div class="eyebrow">Operational memory, structured for intelligence</div>
+          <h2>Capture the shift.<br />Preserve the truth.</h2>
           <p>
-            Employees complete a compulsory role-specific shift report from a kiosk or their own phone.
-            The Time & Attendance system can then verify that the reporting obligation is complete before clock-off.
+            Every identified employee completes a compulsory role-specific handover from a kiosk or phone.
+            InteliMine turns that handover into versioned, traceable operational facts that preserve who observed what, when, where, and under which shift context.
           </p>
           <div class="principles">
             <span>Compulsory reporting</span>
-            <span>Role-aware capture</span>
-            <span>Supervisor override</span>
-            <span>T&amp;A integration boundary</span>
+            <span>Structured + narrative</span>
+            <span>Stable analytical IDs</span>
+            <span>Preserved lifecycle history</span>
+            <span>BI-ready exports</span>
+            <span>Immutable observations</span>
+            <span>Explicit reporting obligations</span>
           </div>
         </div>
 
@@ -37,10 +40,17 @@
           <h3>Choose an experience</h3>
           <button class="primary" data-route="employee">Employee / Kiosk</button>
           <button data-route="manager">Operations Dashboard</button>
+          <button data-route="analytics">Analytics Integrity</button>
           <button data-route="attendance">T&amp;A Check Simulator</button>
           <button data-route="integration">Integration Hub</button>
           <button class="secondary" id="resetDemoButton">Reset Demo Data</button>
         </div>
+      </div>
+
+      <div class="card home-manifesto">
+        <div class="eyebrow">Design principle</div>
+        <h3>The dashboard is useful. The dataset is strategic. The history must remain true.</h3>
+        <p class="muted">Every new InteliMine feature should create information that remains attributable, versioned and analytically meaningful across employees, shifts, assets, locations and years.</p>
       </div>
     </section>
 
@@ -55,9 +65,16 @@
 
       <div id="employeeLoginCard" class="card narrow-card">
         <h3>Identify employee</h3>
-        <p class="muted">Prototype login uses employee number and PIN. The same flow can later be linked to card/badge readers.</p>
+        <p class="muted">Prototype login uses employee number and PIN. The same identity flow can later be linked to enterprise authentication or card/badge readers.</p>
         <label>Employee number<input id="employeeNumber" inputmode="numeric" placeholder="e.g. 104782" /></label>
         <label>PIN<input id="employeePin" type="password" inputmode="numeric" placeholder="4 digits" /></label>
+        <label>Capture channel
+          <select id="captureChannel">
+            <option value="KIOSK">Shared kiosk</option>
+            <option value="MOBILE">Employee cellphone</option>
+            <option value="TABLET">Operational tablet</option>
+          </select>
+        </label>
         <button id="employeeLoginButton" class="primary">Sign in</button>
         <div id="employeeLoginStatus"></div>
         <details class="demo-credentials">
@@ -78,6 +95,17 @@
         </div>
       </div>
       <div id="managerDashboard"></div>
+    </section>
+
+    <section id="analyticsView" class="view hidden">
+      <div class="view-header">
+        <button class="link-button" data-route="home">← Home</button>
+        <div>
+          <div class="eyebrow">Analytics Integrity</div>
+          <h2>Data Readiness</h2>
+        </div>
+      </div>
+      <div id="analyticsWorkspace"></div>
     </section>
 
     <section id="attendanceView" class="view hidden">
@@ -108,14 +136,6 @@
       <div id="integrationHub"></div>
     </section>
   </main>
-
-  <template id="metricTemplate">
-    <div class="metric-card">
-      <div class="metric-label"></div>
-      <div class="metric-value"></div>
-      <div class="metric-note"></div>
-    </div>
-  </template>
 
   <script type="module" src="js/app.js"></script>
 </body>

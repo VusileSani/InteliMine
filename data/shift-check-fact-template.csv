@@ -1,0 +1,2 @@
+checkId,sourceSubmissionId,obligationId,shiftInstanceId,employeeNumber,reportingRoleId,departmentId,questionKey,factType,valueCode,valueText,subjectType,subjectId,abnormalFlag,recordedAtUtc,captureChannel,dataContractVersion,reportSchemaVersion
+CHK-001,SUB-001,OBL-001,SHIFT-001,104782,FITTER,DEPT-ENG,generalCondition,CONDITION,NORMAL,,EQUIPMENT,EQ-CV04,false,2026-09-05T16:47:00Z,KIOSK,1.1,1.3
