@@ -34,18 +34,18 @@ export function renderObservationComposer(employee) {
     <section class="observation-section">
       <div class="section-title observation-title">
         <div>
-          <div class="eyebrow">Immutable observation capture</div>
+          <div class="eyebrow">Shift observation</div>
           <h3>Operational observations</h3>
         </div>
-        <span class="badge">Observation facts</span>
+        
       </div>
-      <p class="muted">Observations are immutable facts. Controlled categories support analysis; your narrative preserves operational context. Action-required observations create a separate managed issue.</p>
+      <p class="muted">Record anything the next shift or supervisor needs to know. If action is required, it will be carried into management follow-up.</p>
 
       <div class="question">
-        <div class="question-title">Did you observe anything this shift that should be tracked?</div>
+        <div class="question-title">Anything from this shift that needs to be handed over?</div>
         <div class="choice-row">
-          <label class="choice"><input type="radio" name="observationDeclared" value="yes" /><span>Yes — capture observation</span></label>
-          <label class="choice"><input type="radio" name="observationDeclared" value="no" /><span>No trackable observation</span></label>
+          <label class="choice"><input type="radio" name="observationDeclared" value="yes" /><span>Yes — add observation</span></label>
+          <label class="choice"><input type="radio" name="observationDeclared" value="no" /><span>No</span></label>
         </div>
       </div>
 
@@ -69,8 +69,8 @@ export function renderObservationComposer(employee) {
           <label>Action required?
             <select id="obsActionRequired"><option value="">Choose</option><option value="yes">Yes</option><option value="no">No</option></select>
           </label>
-          <label class="full">Observation / context
-            <textarea id="obsNarrative" placeholder="What did you observe? Include the context another shift or manager would need."></textarea>
+          <label class="full">What happened?
+            <textarea id="obsNarrative" placeholder="Describe what happened and what the next shift needs to know."></textarea>
           </label>
           <div class="full observation-actions">
             <button type="button" id="addObservationButton" class="secondary">+ Add observation</button>

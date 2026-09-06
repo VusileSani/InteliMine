@@ -177,6 +177,8 @@ export function buildIssueFactRows(state) {
       title: issue.title,
       currentStatus: issue.currentStatus,
       severityId: issue.severityId,
+      ownerRole: issue.ownerRole || "",
+      targetAtUtc: issue.targetAt ? new Date(issue.targetAt).toISOString() : null,
       eventTypeId: issue.eventTypeId,
       eventTypeName: eventType?.label || "",
       eventCategoryId: eventType?.category || "",
@@ -203,11 +205,65 @@ export function buildIssueFactRows(state) {
   });
 }
 
+export function buildShiftPerformanceFactRows(state) {
+  return (state.shiftPerformance || []).map(item => ({
+    shiftInstanceId: item.shiftInstanceId,
+    operationId: APP_CONFIG.operationId,
+    plannedTonnes: Number(item.plannedTonnes || 0),
+    actualTonnes: Number(item.actualTonnes || 0),
+    planAttainmentPct: Number(item.plannedTonnes || 0) ? Math.round((Number(item.actualTonnes || 0) / Number(item.plannedTonnes || 0)) * 100) : 0,
+    equipmentAvailabilityPct: Number(item.equipmentAvailabilityPct || 0),
+    utilisationPct: Number(item.utilisationPct || 0),
+    delayMinutes: Number(item.delayMinutes || 0),
+    criticalControlConformancePct: Number(item.criticalControlConformancePct || 0),
+    handoverCompliancePct: Number(item.handoverCompliancePct || 0),
+    actionClosurePct: Number(item.actionClosurePct || 0),
+    dataContractVersion: APP_CONFIG.dataContractVersion
+  }));
+}
+
+export function buildDelayEventFactRows(state) {
+  return (state.delayEvents || []).map(item => ({
+    delayId: item.delayId,
+    shiftInstanceId: APP_CONFIG.shiftInstanceId,
+    operationId: APP_CONFIG.operationId,
+    category: item.category,
+    timeClass: item.timeClass || "",
+    areaId: item.areaId || "",
+    equipmentId: item.equipmentId || "",
+    delayMinutes: Number(item.minutes || 0),
+    estimatedTonnesImpact: Number(item.estimatedTonnesImpact || 0),
+    label: item.label || "",
+    dataContractVersion: APP_CONFIG.dataContractVersion
+  }));
+}
+
+export function buildControlVerificationFactRows(state) {
+  return (state.controlVerifications || []).map(item => ({
+    verificationId: item.verificationId,
+    shiftInstanceId: APP_CONFIG.shiftInstanceId,
+    operationId: APP_CONFIG.operationId,
+    hazardId: item.hazardId || "",
+    hazard: item.hazard || "",
+    controlId: item.controlId || "",
+    control: item.control || "",
+    areaId: item.areaId || "",
+    status: item.status || "",
+    owner: item.owner || "",
+    verifiedAtUtc: item.verifiedAt ? new Date(item.verifiedAt).toISOString() : null,
+    note: item.note || "",
+    dataContractVersion: APP_CONFIG.dataContractVersion
+  }));
+}
+
 export function analyticsDataQuality(state) {
   const observationRows = buildObservationFactRows(state);
   const checkRows = buildCheckFactRows(state);
   const complianceRows = buildComplianceFactRows(state);
   const issueRows = buildIssueFactRows(state);
+  const performanceRows = buildShiftPerformanceFactRows(state);
+  const delayRows = buildDelayEventFactRows(state);
+  const controlRows = buildControlVerificationFactRows(state);
   const errors = [];
 
   for (const row of observationRows) {
@@ -231,7 +287,28 @@ export function analyticsDataQuality(state) {
     if (!row.issueId || !row.primaryObservationId) errors.push("Issue fact missing observation lineage");
   }
 
-  const totalRows = observationRows.length + checkRows.length + complianceRows.length + issueRows.length;
+  for (const row of performanceRows) {
+    if (!row.shiftInstanceId || !row.operationId) errors.push("Shift performance fact missing grain identity");
+  }
+
+  for (const row of delayRows) {
+    if (!row.delayId || !row.category) errors.push("Delay event fact missing identity or category");
+  }
+
+  for (const row of controlRows) {
+    if (!row.verificationId || !row.status || !row.control) errors.push("Control verification fact missing identity or status");
+  }
+
+  const totalRows = observationRows.length + checkRows.length + complianceRows.length + issueRows.length + performanceRows.length + delayRows.length + controlRows.length;
   const completeness = totalRows ? Math.max(0, Math.round(((totalRows - errors.length) / totalRows) * 100)) : 100;
-  return { totalRows, completeness, errors, observationRows: observationRows.length, checkRows: checkRows.length, complianceRows: complianceRows.length, issueRows: issueRows.length };
+  return {
+    totalRows, completeness, errors,
+    observationRows: observationRows.length,
+    checkRows: checkRows.length,
+    complianceRows: complianceRows.length,
+    issueRows: issueRows.length,
+    performanceRows: performanceRows.length,
+    delayRows: delayRows.length,
+    controlRows: controlRows.length
+  };
 }

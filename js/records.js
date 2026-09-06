@@ -68,6 +68,18 @@ function issueTitle(draft) {
   return `${subject} · ${type?.label || draft.eventTypeId}`;
 }
 
+function issueOwner(draft) {
+  const category = eventTypeById(draft.eventTypeId)?.category;
+  if (["EQUIPMENT", "ELECTRICAL"].includes(category)) return "Engineering Supervisor";
+  if (category === "SAFETY") return "Shift Supervisor";
+  return "Production Supervisor";
+}
+
+function issueTargetAt(openedAt, severityId) {
+  const minutes = { CRITICAL: 15, HIGH: 30, MEDIUM: 120, LOW: 240, INFO: 480 }[severityId] || 120;
+  return new Date(new Date(openedAt).getTime() + minutes * 60000).toISOString();
+}
+
 export function createSubmissionArtifacts(employee, obligation, answers, observationResult, capture = {}) {
   if (!obligation) throw new Error("No reporting obligation exists for this employee and shift.");
 
@@ -124,6 +136,8 @@ export function createSubmissionArtifacts(employee, obligation, answers, observa
         eventTypeId: draft.eventTypeId,
         severityId: draft.severityId,
         currentStatus: "OPEN",
+        ownerRole: issueOwner(draft),
+        targetAt: issueTargetAt(completedAt, draft.severityId),
         openedAt: completedAt,
         openedAtUtc: new Date(completedAt).toISOString(),
         primaryObservationId: observationId,

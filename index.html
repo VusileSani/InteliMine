@@ -8,79 +8,41 @@
 </head>
 <body>
   <header class="topbar">
-    <div>
-      <div class="eyebrow">InteliMine · Mining Operations</div>
-      <h1>Shift Intelligence</h1>
+    <div class="brand-block">
+      <div class="eyebrow">InteliMine</div>
+      <h1>Mining Shift Intelligence</h1>
+      <div class="brand-tagline">People · Operations · A safer tomorrow</div>
+      <div id="topbarStatus" class="topbar-status"></div>
     </div>
-    <div id="topbarStatus" class="topbar-status">V1.3 · Analytics Integrity</div>
+
+    <div class="work-mantra">Real work. Real progress. <span>Always safe.</span></div>
+
+    <label class="role-switcher" for="roleSelect">
+      <span>Role</span>
+      <select id="roleSelect" aria-label="Choose role">
+        <option value="employee">Employee</option>
+        <option value="manager">Mine Manager</option>
+        <option value="executive">Mine Executive</option>
+      </select>
+    </label>
   </header>
 
   <main class="shell">
-    <section id="homeView" class="view">
-      <div class="hero-grid">
-        <div class="card hero-copy">
-          <div class="eyebrow">Operational memory, structured for intelligence</div>
-          <h2>Capture the shift.<br />Preserve the truth.</h2>
-          <p>
-            Every identified employee completes a compulsory role-specific handover from a kiosk or phone.
-            InteliMine turns that handover into versioned, traceable operational facts that preserve who observed what, when, where, and under which shift context.
-          </p>
-          <div class="principles">
-            <span>Compulsory reporting</span>
-            <span>Structured + narrative</span>
-            <span>Stable analytical IDs</span>
-            <span>Preserved lifecycle history</span>
-            <span>BI-ready exports</span>
-            <span>Immutable observations</span>
-            <span>Explicit reporting obligations</span>
-          </div>
-        </div>
-
-        <div class="card access-card">
-          <h3>Choose an experience</h3>
-          <button class="primary" data-route="employee">Employee / Kiosk</button>
-          <button data-route="manager">Operations Dashboard</button>
-          <button data-route="analytics">Analytics Integrity</button>
-          <button data-route="attendance">T&amp;A Check Simulator</button>
-          <button data-route="integration">Integration Hub</button>
-          <button class="secondary" id="resetDemoButton">Reset Demo Data</button>
-        </div>
-      </div>
-
-      <div class="card home-manifesto">
-        <div class="eyebrow">Design principle</div>
-        <h3>The dashboard is useful. The dataset is strategic. The history must remain true.</h3>
-        <p class="muted">Every new InteliMine feature should create information that remains attributable, versioned and analytically meaningful across employees, shifts, assets, locations and years.</p>
-      </div>
-    </section>
-
     <section id="employeeView" class="view hidden">
       <div class="view-header">
-        <button class="link-button" data-route="home">← Home</button>
         <div>
-          <div class="eyebrow">Employee / Kiosk</div>
-          <h2>Shift Report</h2>
+          <div class="eyebrow">Employee</div>
+          <h2>Shift Handover</h2>
+          <p class="view-subtitle">Complete the required handover before clock-off.</p>
         </div>
       </div>
 
       <div id="employeeLoginCard" class="card narrow-card">
-        <h3>Identify employee</h3>
-        <p class="muted">Prototype login uses employee number and PIN. The same identity flow can later be linked to enterprise authentication or card/badge readers.</p>
-        <label>Employee number<input id="employeeNumber" inputmode="numeric" placeholder="e.g. 104782" /></label>
-        <label>PIN<input id="employeePin" type="password" inputmode="numeric" placeholder="4 digits" /></label>
-        <label>Capture channel
-          <select id="captureChannel">
-            <option value="KIOSK">Shared kiosk</option>
-            <option value="MOBILE">Employee cellphone</option>
-            <option value="TABLET">Operational tablet</option>
-          </select>
-        </label>
-        <button id="employeeLoginButton" class="primary">Sign in</button>
+        <h3>Sign in</h3>
+        <label>Employee number<input id="employeeNumber" inputmode="numeric" autocomplete="username" placeholder="Employee number" /></label>
+        <label>PIN<input id="employeePin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="PIN" /></label>
+        <button id="employeeLoginButton" class="primary">Continue</button>
         <div id="employeeLoginStatus"></div>
-        <details class="demo-credentials">
-          <summary>Demo credentials</summary>
-          <p>104782 / 1111 · Fitter<br />105310 / 2222 · Electrician<br />106004 / 3333 · Safety<br />107199 / 4444 · Supervisor<br />108022 / 5555 · Operator</p>
-        </details>
       </div>
 
       <div id="employeeWorkspace" class="hidden"></div>
@@ -88,52 +50,24 @@
 
     <section id="managerView" class="view hidden">
       <div class="view-header">
-        <button class="link-button" data-route="home">← Home</button>
         <div>
-          <div class="eyebrow">Management</div>
-          <h2>Operations Dashboard</h2>
+          <div class="eyebrow">Mine Manager</div>
+          <h2>Shift Control</h2>
+          <p class="view-subtitle">See what requires intervention now, not everything that happened.</p>
         </div>
       </div>
       <div id="managerDashboard"></div>
     </section>
 
-    <section id="analyticsView" class="view hidden">
+    <section id="executiveView" class="view hidden">
       <div class="view-header">
-        <button class="link-button" data-route="home">← Home</button>
         <div>
-          <div class="eyebrow">Analytics Integrity</div>
-          <h2>Data Readiness</h2>
+          <div class="eyebrow">Mine Executive</div>
+          <h2>Operating Performance</h2>
+          <p class="view-subtitle">Performance, risk and recurring loss across the operating rhythm.</p>
         </div>
       </div>
-      <div id="analyticsWorkspace"></div>
-    </section>
-
-    <section id="attendanceView" class="view hidden">
-      <div class="view-header">
-        <button class="link-button" data-route="home">← Home</button>
-        <div>
-          <div class="eyebrow">External System Boundary</div>
-          <h2>Time &amp; Attendance Check</h2>
-        </div>
-      </div>
-
-      <div class="card narrow-card">
-        <p class="muted">This simulates the separate T&amp;A system asking one question: may this employee clock off?</p>
-        <label>Employee number<input id="taEmployeeNumber" inputmode="numeric" placeholder="e.g. 104782" /></label>
-        <button id="taCheckButton" class="primary">Check reporting status</button>
-        <div id="taCheckResult"></div>
-      </div>
-    </section>
-
-    <section id="integrationView" class="view hidden">
-      <div class="view-header">
-        <button class="link-button" data-route="home">← Home</button>
-        <div>
-          <div class="eyebrow">Enterprise Integration</div>
-          <h2>Integration Hub</h2>
-        </div>
-      </div>
-      <div id="integrationHub"></div>
+      <div id="executiveDashboard"></div>
     </section>
   </main>
 

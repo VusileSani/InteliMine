@@ -10,22 +10,19 @@ function formatTime(value) {
   return new Date(value).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
-function capturePointFor(channel) {
-  if (channel === "MOBILE") return "SELF-SERVICE-WEB";
-  if (channel === "TABLET") return "TABLET-DEMO-01";
-  return APP_CONFIG.defaultCapturePointId;
-}
-
 export function bindEmployeeExperience({ getState, setState, onStateChange }) {
   const loginCard = document.getElementById("employeeLoginCard");
   const workspace = document.getElementById("employeeWorkspace");
   const employeeNumber = document.getElementById("employeeNumber");
   const employeePin = document.getElementById("employeePin");
-  const captureChannel = document.getElementById("captureChannel");
   const loginButton = document.getElementById("employeeLoginButton");
   const loginStatus = document.getElementById("employeeLoginStatus");
   let observationComposer = null;
-  let activeCapture = { channel: APP_CONFIG.defaultCaptureChannel, capturePointId: APP_CONFIG.defaultCapturePointId };
+
+  const capture = {
+    channel: APP_CONFIG.defaultCaptureChannel,
+    capturePointId: APP_CONFIG.defaultCapturePointId
+  };
 
   function showStatus(message, tone = "danger") {
     loginStatus.innerHTML = `<div class="status-box ${tone}">${message}</div>`;
@@ -42,8 +39,12 @@ export function bindEmployeeExperience({ getState, setState, onStateChange }) {
     if (!obligation) {
       workspace.innerHTML = `
         <div class="card employee-head">
-          <div><div class="eyebrow">Reporting integrity</div><h3>${employeeDisplayName(employee)}</h3><p class="muted">No reporting obligation exists for this shift instance. A report cannot be invented merely because the employee can sign in.</p></div>
-          <div class="status-box warning">Supervisor review required</div>
+          <div class="identity-block">
+            <div class="eyebrow">${employeeAreaName(employee)}</div>
+            <h3>${employeeDisplayName(employee)}</h3>
+            <div class="muted">${employee.employeeNumber} · ${reportingRoleLabel(employee.reportingRole)}</div>
+          </div>
+          <div class="status-box warning">No handover is assigned for this shift. Contact your supervisor.</div>
         </div>
         <div class="card"><button id="employeeSignOutButton" class="secondary">Sign out</button></div>`;
       workspace.classList.remove("hidden");
@@ -58,20 +59,18 @@ export function bindEmployeeExperience({ getState, setState, onStateChange }) {
           <div class="eyebrow">${APP_CONFIG.shiftName} · ${employeeAreaName(employee)}</div>
           <h3>${employeeDisplayName(employee)}</h3>
           <div class="muted">${employee.employeeNumber} · ${reportingRoleLabel(employee.reportingRole)} · ${employeeDepartmentName(employee)}</div>
-          <div class="muted small-copy">Source title: ${employee.jobTitle}</div>
           <div class="badges">
             <span class="badge">Clocked in ${formatTime(attendance?.clockInAt)}</span>
-            <span class="badge ${status}">Report: ${status.toUpperCase()}</span>
-            <span class="badge">${submission?.provenance?.captureChannel || activeCapture.channel}</span>
+            <span class="badge ${status}">${status === "complete" ? "Handover complete" : status === "excused" ? "Exception authorised" : "Handover required"}</span>
           </div>
         </div>
-        <div>
-          <div class="muted">Clock-off status</div>
-          <div class="status-box ${clockOff.allowed ? "success" : "warning"}">${clockOff.allowed ? "Eligible to clock off" : "Clock-off blocked"}<br /><small>${clockOff.reason}</small></div>
+        <div class="clockoff-block">
+          <div class="muted">Clock-off</div>
+          <div class="status-box ${clockOff.allowed ? "success" : "warning"}">${clockOff.allowed ? "Allowed" : "Blocked"}<br /><small>${clockOff.reason}</small></div>
         </div>
       </div>
       ${status === "complete"
-        ? `<div class="card"><div class="eyebrow">Analytics integrity record captured</div><h3>Shift report complete</h3><p class="muted">Submitted at ${new Date(submission.completedAt).toLocaleString()}. ${submission.checkFactIds?.length || 0} structured check facts, ${submission.observationIds?.length || 0} immutable observation${submission.observationIds?.length === 1 ? "" : "s"}, and ${submission.issueIds?.length || 0} managed issue${submission.issueIds?.length === 1 ? "" : "s"} were recorded.</p><button id="employeeSignOutButton" class="secondary">Sign out</button></div>`
+        ? `<div class="card completion-card"><div class="eyebrow">Handover complete</div><h3>Shift report recorded</h3><p class="muted">Submitted at ${new Date(submission.completedAt).toLocaleString()}. Your handover is available to the next shift and management.</p><button id="employeeSignOutButton" class="secondary">Sign out</button></div>`
         : renderReportForm(employee, submission)}
     `;
 
@@ -100,10 +99,6 @@ export function bindEmployeeExperience({ getState, setState, onStateChange }) {
       showStatus("Employee number or PIN is incorrect, or the employee is inactive.");
       return;
     }
-    activeCapture = {
-      channel: captureChannel?.value || APP_CONFIG.defaultCaptureChannel,
-      capturePointId: capturePointFor(captureChannel?.value || APP_CONFIG.defaultCaptureChannel)
-    };
     loginStatus.innerHTML = "";
     renderEmployeeWorkspace(employee);
   }
@@ -115,12 +110,13 @@ export function bindEmployeeExperience({ getState, setState, onStateChange }) {
     const observationResult = observationComposer?.read() || { declared: "", observations: [], missing: ["Observation declaration"] };
     const formStatus = document.getElementById("reportFormStatus");
     const missing = [...answerResult.missing, ...observationResult.missing];
+
     if (answerResult.requiresObservation && observationResult.declared !== "yes") {
-      missing.push("A role-specific answer indicates an issue; capture at least one structured observation");
+      missing.push("A reported abnormal condition requires an observation");
     }
 
     if (missing.length) {
-      formStatus.innerHTML = `<div class="status-box warning">Complete every required item before submitting.<br /><small>${missing.join(" · ")}</small></div>`;
+      formStatus.innerHTML = `<div class="status-box warning">Complete the required items before submitting.<br /><small>${missing.join(" · ")}</small></div>`;
       return;
     }
 
@@ -128,7 +124,7 @@ export function bindEmployeeExperience({ getState, setState, onStateChange }) {
     const obligation = obligationFor(state, employee.id);
 
     try {
-      const { submission, checkFacts, observations, issues } = createSubmissionArtifacts(employee, obligation, answerResult.answers, observationResult, activeCapture);
+      const { submission, checkFacts, observations, issues } = createSubmissionArtifacts(employee, obligation, answerResult.answers, observationResult, capture);
       state.submissions = state.submissions.filter(item => item.obligationId !== obligation.obligationId);
       state.submissions.push(submission);
       state.checkFacts.push(...checkFacts);
@@ -165,7 +161,6 @@ export function bindEmployeeExperience({ getState, setState, onStateChange }) {
       loginCard.classList.remove("hidden");
       employeeNumber.value = "";
       employeePin.value = "";
-      if (captureChannel) captureChannel.value = APP_CONFIG.defaultCaptureChannel;
       loginStatus.innerHTML = "";
     }
   };

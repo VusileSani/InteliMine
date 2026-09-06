@@ -18,7 +18,7 @@ export function transitionLabel(status) {
   }[status] || status;
 }
 
-export function transitionIssue(state, issueId, actorId = "MANAGER-DEMO") {
+export function transitionIssue(state, issueId, actorId = "ROLE-MINE-MANAGER") {
   const issue = (state.issues || []).find(item => item.issueId === issueId);
   if (!issue) return { ok: false, message: "Issue not found." };
 

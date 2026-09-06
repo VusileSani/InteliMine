@@ -1,2 +1,2 @@
 employeeNumber,firstName,lastName,jobTitle,reportingRole,departmentId,areaId,operationId,supervisorEmployeeNo,employmentStatus,shiftGroup,workLocation,badgeId,mobileNumber,email,sourceSystem,sourceRecordId,effectiveFrom,effectiveTo,lastUpdatedAt
-104782,Thabo,Mokoena,Engineering Artisan Mechanical UG,FITTER,DEPT-ENG,AREA-SEC3,OP-DEMO,107199,ACTIVE,B,Underground,CARD-104782,,,SAP,104782,2026-01-01,,2026-09-05T18:00:00+02:00
+104782,Thabo,Mokoena,Engineering Artisan Mechanical UG,FITTER,DEPT-ENG,AREA-SEC3,OP-SITE01,107199,ACTIVE,B,Underground,CARD-104782,,,SAP,104782,2026-01-01,,2026-09-05T18:00:00+02:00

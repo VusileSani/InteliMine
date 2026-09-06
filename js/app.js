@@ -1,10 +1,9 @@
-import { loadState, saveState, resetState } from "./store.js";
+import { loadState, saveState } from "./store.js";
 import { bindEmployeeExperience } from "./employee.js";
 import { renderDashboard, bindDashboardActions } from "./dashboard.js";
-import { bindAttendanceSimulator } from "./attendance.js";
-import { renderIntegrationHub } from "./integration.js";
-import { renderAnalytics, bindAnalyticsActions } from "./analytics.js";
+import { renderExecutiveDashboard } from "./executive.js";
 import { APP_CONFIG } from "./config.js";
+import { operationById } from "./masterData.js";
 
 let state = loadState();
 
@@ -19,53 +18,44 @@ function setState(nextState) {
 
 function onStateChange() {
   renderDashboard(state);
-  renderAnalytics(state);
+  renderExecutiveDashboard(state);
 }
 
 const employeeExperience = bindEmployeeExperience({ getState, setState, onStateChange });
 bindDashboardActions({ getState, setState, onStateChange });
-bindAttendanceSimulator({ getState });
-bindAnalyticsActions({ getState });
 
 const views = {
-  home: document.getElementById("homeView"),
   employee: document.getElementById("employeeView"),
   manager: document.getElementById("managerView"),
-  attendance: document.getElementById("attendanceView"),
-  integration: document.getElementById("integrationView"),
-  analytics: document.getElementById("analyticsView")
+  executive: document.getElementById("executiveView")
 };
 
-function route(target) {
-  Object.values(views).forEach(view => view.classList.add("hidden"));
-  const selected = views[target] || views.home;
-  selected.classList.remove("hidden");
-  document.getElementById("topbarStatus").textContent = target === "home"
-    ? `V${APP_CONFIG.version} · ${APP_CONFIG.releaseName}`
-    : selected.querySelector(".eyebrow")?.textContent || `V${APP_CONFIG.version}`;
+const roleSelect = document.getElementById("roleSelect");
+const topbarStatus = document.getElementById("topbarStatus");
+const operation = operationById(APP_CONFIG.operationId);
 
-  if (target === "manager") renderDashboard(state);
-  if (target === "integration") renderIntegrationHub(state);
-  if (target === "analytics") renderAnalytics(state);
-  if (target === "employee") employeeExperience.reset();
-  window.scrollTo({ top: 0, behavior: "smooth" });
+topbarStatus.textContent = `${operation?.name || "Mining Operation"} · ${APP_CONFIG.shiftName} · ${APP_CONFIG.shiftDateLabel}`;
+
+function route(target) {
+  const resolved = views[target] ? target : "manager";
+  Object.values(views).forEach(view => view.classList.add("hidden"));
+  views[resolved].classList.remove("hidden");
+  roleSelect.value = resolved;
+
+  if (resolved === "manager") renderDashboard(state);
+  if (resolved === "executive") renderExecutiveDashboard(state);
+  if (resolved === "employee") employeeExperience.reset();
+
+  const url = new URL(window.location.href);
+  url.searchParams.set("role", resolved);
+  window.history.replaceState({}, "", url);
+  window.scrollTo(0, 0);
 }
 
-document.addEventListener("click", event => {
-  const routeButton = event.target.closest("[data-route]");
-  if (!routeButton) return;
-  route(routeButton.dataset.route);
-});
-
-document.getElementById("resetDemoButton").addEventListener("click", () => {
-  if (!window.confirm("Reset the InteliMine demo data?")) return;
-  state = resetState();
-  onStateChange();
-  employeeExperience.reset();
-  alert("Demo data reset.");
-});
+roleSelect.addEventListener("change", () => route(roleSelect.value));
 
 renderDashboard(state);
-renderIntegrationHub(state);
-renderAnalytics(state);
-route("home");
+renderExecutiveDashboard(state);
+
+const requestedRole = new URLSearchParams(window.location.search).get("role");
+route(requestedRole || "manager");

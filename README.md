@@ -1,75 +1,114 @@
-# InteliMine — Version 1.3 · Analytics Integrity
+# InteliMine — Version 2.1
 
-InteliMine is a responsive mining shift-intelligence prototype for compulsory employee handover reporting from a shared kiosk, employee cellphone or operational tablet.
+InteliMine turns compulsory shift handover into structured operational intelligence while keeping each role focused on the decisions it actually needs to make.
 
-## Business invariants
-1. Attendance proves the employee was present.
-2. A clock-in creates an explicit reporting obligation for the identified shift instance.
-3. Reporting proves the employee handed over operational knowledge.
-4. A normal clock-off is allowed only after the obligation is complete, with an auditable supervisor override for genuine exceptions.
-5. Normal conditions are data. Non-submission is a different state.
-6. An observation is an immutable statement of what was observed. An operational issue is a separate record whose lifecycle may change.
-7. Historical employee/role/area context is frozen with each fact so later master-data changes do not rewrite history.
-8. The operational application captures information; the governed dataset is the long-term analytical asset.
+## Product experiences
 
-## V1.3 — Analytics Integrity
-V1.3 strengthens the information model before production persistence is introduced.
+### Employee
+A short role-specific shift handover. Employees identify themselves, complete required operational checks, add any observations that need to carry forward, and submit before clock-off.
 
-- Explicit `shiftInstance` with start/end timestamps, business date, timezone and UTC equivalents.
-- Explicit `reportingObligation` records generated from attendance/roster presence rather than assuming every active employee is the denominator.
-- Structured check facts are created for every required answer, including normal conditions.
-- Immutable observation facts are separated from managed operational issues.
-- Action-required observations create an issue; issue status changes never mutate the source observation.
-- Employee organisational context is snapshotted at capture time.
-- Every analytical record carries data-contract, report-schema, taxonomy and master-data versions.
-- Capture provenance records kiosk/mobile/tablet channel and capture point.
-- Integration Hub demonstrates staged ingestion: `RECEIVED → VALIDATED → APPLIED` or `REJECTED`.
-- Cross-midnight observation times resolve inside the actual shift instance.
-- Vendor-neutral CSV exports now exist for compliance, structured checks, observations and issues.
+### Mine Manager
+An exception-first shift-control view. The manager sees:
+- critical-control verification and exceptions;
+- production versus plan;
+- equipment availability and current delay minutes;
+- the largest current shift losses;
+- open operational actions with owner, target and lifecycle state;
+- handover readiness and only the employees still outstanding;
+- a controlled clock-off exception path for genuine cases.
 
-## Demo credentials
+### Mine Executive
+A compact operating-performance view across the recent shift rhythm. The executive sees:
+- production plan attainment;
+- critical-control conformance;
+- equipment availability;
+- action closure discipline;
+- handover discipline;
+- material leadership exceptions;
+- recurring loss concentration;
+- open high-priority operational risk.
+
+The top-right role selector switches cleanly between these experiences. Each role sees only the information relevant to that role.
+
+## Core business invariants
+
+1. Attendance proves presence; reporting proves handover.
+2. A required handover obligation is explicit and auditable.
+3. Normal conditions are data; non-submission is a separate state.
+4. Observations remain immutable historical facts.
+5. Operational issues have a separate managed lifecycle.
+6. Employee, role, area and shift context is frozen with each fact.
+7. Controlled vocabularies and stable IDs preserve analytical meaning.
+8. Management dashboards are derived from governed facts rather than becoming the data model themselves.
+9. Operational loss must be classified consistently so recurring constraints can be compared across shifts.
+10. Critical-control verification has an explicit denominator: passed controls and exceptions are both retained.
+
+## Version 2.1 visual upgrade
+
+- Introduced a restrained industrial operations visual system using steel/slate surfaces and safety-yellow accents.
+- Added a mine-operations header underlay featuring conveyors, chairlift infrastructure, mine vehicles and plant/control cues.
+- Kept operational content on clean surfaces so the machinery treatment never competes with decision-critical information.
+- Strengthened metric-card hierarchy for Mine Manager and Mine Executive views without adding information density.
+- Applied the same visual language to employee handover forms while preserving the fast, minimal workflow.
+- Preserved stable page sizing and role switching with no zoom/scale effects.
+
+## Version 2.0 system improvements
+
+- Removed build terminology, analytics-engineering language, simulator labels and technical IDs from the normal product UI.
+- Replaced the old home screen with a focused role switcher.
+- Rebuilt the Mine Manager experience around interventions, exceptions, loss and readiness.
+- Added a dedicated Mine Executive operating-performance view.
+- Added shift-performance facts, delay-event facts and critical-control-verification facts to the analytical model.
+- Added owner and target-time context to managed operational issues.
+- Kept clock-off exceptions behind progressive disclosure instead of permanently occupying management screen space.
+- Simplified the employee flow and removed capture-channel selection from the employee task.
+- Stabilised page composition so role switching does not visually scale or resize the interface.
+- Preserved the governed analytics foundation underneath the simplified user experience.
+
+## Sample employee credentials
+
 - 104782 / 1111 — Fitter
 - 105310 / 2222 — Electrician
 - 106004 / 3333 — Safety Officer
 - 107199 / 4444 — Supervisor
 - 108022 / 5555 — Operator
 
+Credentials are documented here for testing and are intentionally not displayed inside the employee interface.
+
 ## Project structure
-- `index.html` — application shell
-- `css/styles.css` — responsive visual design
-- `js/config.js` — product/version configuration
-- `js/shift.js` — shift-instance time model and cross-midnight timestamp resolution
-- `js/masterData.js` — canonical operational dimensions and controlled vocabularies
-- `js/demoData.js` — demo Employee Master, attendance, obligations, submissions, facts, issues and integration batches
-- `js/employeeMaster.js` — Employee Master contract and validation
-- `js/roleMappings.js` — source job-title → reporting-role mappings
-- `js/reportSchemas.js` — compulsory role-specific reporting questions plus analytics metadata
-- `js/context.js` — version envelope, provenance and frozen employee context
-- `js/observation.js` — immutable observation composer
-- `js/records.js` — submission, check-fact, observation and issue factories
-- `js/store.js` — local prototype persistence
-- `js/domain.js` — reporting-obligation / clock-off business rules
-- `js/issueLifecycle.js` — managed issue lifecycle transitions
-- `js/reporting.js` — report rendering and validation
-- `js/employee.js` — employee / kiosk / mobile experience
-- `js/dashboard.js` — management compliance and issue workflow
-- `js/attendance.js` — T&A decision simulator
+
+- `index.html` — role-focused application shell
+- `css/styles.css` — stable responsive UI system
+- `js/app.js` — composition root and role routing
+- `js/employee.js` — employee identification and handover experience
+- `js/dashboard.js` — Mine Manager shift-control experience
+- `js/executive.js` — Mine Executive operating-performance experience
+- `js/leadership.js` — management and executive metric derivation
+- `js/leadershipData.js` — sample shift-performance, delay and control-verification data
+- `js/reportSchemas.js` — compulsory role-specific handover questions
+- `js/observation.js` — structured operational observation capture
+- `js/records.js` — submission, check, observation and issue factories
+- `js/issueLifecycle.js` — operational issue lifecycle
 - `js/analyticsModel.js` — vendor-neutral analytical fact views
-- `js/analytics.js` — analytics-integrity UI and CSV exports
-- `js/integration.js` — Integration Hub and staging visibility
-- `js/app.js` — composition root and routing
-- `data/` — integration, master-data and analytical templates
-- `docs/integration/` — enterprise interface contracts
-- `docs/analytics/` — analytics integrity and fact-grain contracts
+- `js/store.js` — browser persistence for the current build
+- `data/` — master-data and analytical contract templates
+
+The existing integration and analytics engineering modules remain in the codebase as technical foundation, but they are no longer part of the normal role navigation.
 
 ## Run locally
-V1.3 uses ES modules. Serve the project through a local HTTP server, VS Code Live Server, GitHub Pages, or the PowerShell server used during prototype testing. Do not open `index.html` directly via `file://`.
 
-## Prototype persistence
-V1.3 still uses browser `localStorage`. The storage version intentionally changes to `1.3`, so previous V1.x browser demo state is reset instead of being silently coerced into the new analytical model.
+Use VS Code Live Server, GitHub Pages, Firebase Hosting, or another HTTP server. ES modules should be served over HTTP/HTTPS rather than opening `index.html` directly with `file://`.
 
-Production evolution should preserve the same grains:
+## Persistence
 
-`Operational database → governed analytics dataset / warehouse → mine's preferred BI / analytics platform`
+This build still uses browser `localStorage`. The storage schema remains `2.0`, so older v1.x browser state is intentionally not silently coerced into the new leadership model.
 
-InteliMine remains analytics-tool neutral. The data contract is the stable asset.
+The intended production path remains:
+
+`Operational capture → governed operational data → governed analytics dataset / warehouse → preferred BI / analytics platform`
+
+InteliMine remains analytics-tool neutral. The governed data contract is the durable asset.
+
+## Site configuration
+
+Critical-control definitions, hazards, areas, equipment, targets and loss categories are mine-configured master data. The records included here demonstrate the operating model and must be aligned to the mine’s approved risk and control framework before production use.

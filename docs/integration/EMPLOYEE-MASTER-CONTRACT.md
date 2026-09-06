@@ -1,4 +1,4 @@
-# InteliMine Employee Master Contract — V1.3
+# InteliMine Employee Master Contract
 
 ## Purpose
 InteliMine consumes one canonical employee model. SAP, another HR platform, CSV, middleware, or an API may use different field names; the Integration Hub translates source data into this contract.

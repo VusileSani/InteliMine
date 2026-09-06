@@ -1,5 +1,5 @@
 export const OPERATIONS = Object.freeze([
-  { id: "OP-DEMO", code: "DEMO", name: "Demo Mine" }
+  { id: "OP-SITE01", code: "SITE-01", name: "Mining Operation" }
 ]);
 
 export const DEPARTMENTS = Object.freeze([
@@ -9,10 +9,10 @@ export const DEPARTMENTS = Object.freeze([
 ]);
 
 export const AREAS = Object.freeze([
-  { id: "AREA-SEC3", code: "SEC-003", operationId: "OP-DEMO", name: "Section 3" },
-  { id: "AREA-PANEL-B", code: "PNL-B", operationId: "OP-DEMO", name: "Panel B" },
-  { id: "AREA-WORKSHOP", code: "WS-01", operationId: "OP-DEMO", name: "Engineering Workshop" },
-  { id: "AREA-CONVEYOR", code: "CV-DECL", operationId: "OP-DEMO", name: "Conveyor Decline" }
+  { id: "AREA-SEC3", code: "SEC-003", operationId: "OP-SITE01", name: "Section 3" },
+  { id: "AREA-PANEL-B", code: "PNL-B", operationId: "OP-SITE01", name: "Panel B" },
+  { id: "AREA-WORKSHOP", code: "WS-01", operationId: "OP-SITE01", name: "Engineering Workshop" },
+  { id: "AREA-CONVEYOR", code: "CV-DECL", operationId: "OP-SITE01", name: "Conveyor Decline" }
 ]);
 
 export const EQUIPMENT = Object.freeze([
@@ -44,6 +44,23 @@ export const EVENT_TYPES = Object.freeze([
   { id: "EVT-PEOPLE", category: "PEOPLE", label: "Crew / people constraint", requiresEquipment: false, roles: ["SUPERVISOR"] }
 ]);
 
+
+export const DELAY_CATEGORIES = Object.freeze([
+  { id: "EQUIPMENT", label: "Equipment / engineering" },
+  { id: "GROUND", label: "Ground conditions" },
+  { id: "PEOPLE", label: "People / crew" },
+  { id: "SERVICES", label: "Services / infrastructure" }
+]);
+
+export const CRITICAL_CONTROLS = Object.freeze([
+  { id: "CC-GROUND-ENTRY", hazardId: "GROUND_CONTROL", hazardLabel: "Ground control", label: "Workplace ground condition verified before entry" },
+  { id: "CC-GROUND-ACCESS", hazardId: "GROUND_CONTROL", hazardLabel: "Ground control", label: "Access restriction / barricading in place" },
+  { id: "CC-ENERGY-ISOLATION", hazardId: "ENERGY_ISOLATION", hazardLabel: "Energy isolation", label: "Isolation state verified before electrical work" },
+  { id: "CC-MACHINERY-GUARD", hazardId: "MOVING_MACHINERY", hazardLabel: "Moving machinery", label: "Conveyor guarding / access condition verified" },
+  { id: "CC-MOBILE-PREUSE", hazardId: "MOBILE_EQUIPMENT", hazardLabel: "Mobile equipment", label: "Pre-use inspection completed" },
+  { id: "CC-EMERGENCY-COMMS", hazardId: "EMERGENCY_RESPONSE", hazardLabel: "Emergency response", label: "Emergency communication channel available" }
+]);
+
 export const SEVERITIES = Object.freeze([
   { id: "INFO", label: "Information" },
   { id: "LOW", label: "Low" },
@@ -69,6 +86,8 @@ export const departmentById = id => byId(DEPARTMENTS, id);
 export const areaById = id => byId(AREAS, id);
 export const equipmentById = id => byId(EQUIPMENT, id);
 export const eventTypeById = id => byId(EVENT_TYPES, id);
+export const delayCategoryById = id => byId(DELAY_CATEGORIES, id);
+export const criticalControlById = id => byId(CRITICAL_CONTROLS, id);
 export const severityById = id => byId(SEVERITIES, id);
 export const issueStatusById = id => byId(ISSUE_STATUSES, id);
 

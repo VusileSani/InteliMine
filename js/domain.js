@@ -1,4 +1,4 @@
-import { EMPLOYEES, DEMO_ATTENDANCE } from "./demoData.js";
+import { EMPLOYEES, INITIAL_ATTENDANCE } from "./seedData.js";
 import { APP_CONFIG } from "./config.js";
 import { isEmployeeActive } from "./employeeMaster.js";
 
@@ -17,7 +17,7 @@ export function authenticateEmployee(employeeNumber, pin) {
 }
 
 export function attendanceFor(employeeId) {
-  return DEMO_ATTENDANCE.find(entry => entry.employeeId === employeeId && entry.shiftInstanceId === APP_CONFIG.shiftInstanceId) || null;
+  return INITIAL_ATTENDANCE.find(entry => entry.employeeId === employeeId && entry.shiftInstanceId === APP_CONFIG.shiftInstanceId) || null;
 }
 
 export function reportingObligations(state) {

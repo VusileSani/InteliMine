@@ -1,12 +1,12 @@
 export const APP_CONFIG = Object.freeze({
   productName: "InteliMine",
-  version: "1.3",
-  releaseName: "Analytics Integrity",
-  dataContractVersion: "1.1",
-  reportSchemaVersion: "1.3",
-  eventTaxonomyVersion: "1.1",
-  masterDataVersion: "1.0",
-  operationId: "OP-DEMO",
+  version: "2.0",
+  releaseName: "Leadership Value",
+  dataContractVersion: "1.2",
+  reportSchemaVersion: "2.0",
+  eventTaxonomyVersion: "1.2",
+  masterDataVersion: "1.1",
+  operationId: "OP-SITE01",
   defaultAreaId: "AREA-SEC3",
   shiftInstanceId: "SHIFT-NS-20260905",
   shiftId: "NS-20260905",
@@ -19,5 +19,5 @@ export const APP_CONFIG = Object.freeze({
   operationUtcOffset: "+02:00",
   reportDueLabel: "Before clock-off",
   defaultCaptureChannel: "KIOSK",
-  defaultCapturePointId: "KIOSK-DEMO-01"
+  defaultCapturePointId: "KIOSK-SEC3-01"
 });

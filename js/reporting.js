@@ -80,11 +80,11 @@ export function renderReportForm(employee, existingSubmission) {
       <div class="section-title">
         <div>
           <div class="eyebrow">${escapeHtml(reportingRoleLabel(roleCode))} report</div>
-          <h3>Compulsory shift handover</h3>
+          <h3>Shift handover</h3>
         </div>
         <span class="badge outstanding">Required</span>
       </div>
-      <p class="muted">Every required question becomes a structured check fact. Normal conditions are analytically valuable; leaving the report unsubmitted is not.</p>
+      <p class="muted">Complete the required checks so the next shift receives a clear, usable handover.</p>
       <div class="role-report-section">
         ${fields}
       </div>
