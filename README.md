@@ -1,4 +1,4 @@
-# InteliMine — Version 2.1
+# InteliMine — Version 2.2
 
 InteliMine turns compulsory shift handover into structured operational intelligence while keeping each role focused on the decisions it actually needs to make.
 
@@ -28,6 +28,17 @@ A compact operating-performance view across the recent shift rhythm. The executi
 - recurring loss concentration;
 - open high-priority operational risk.
 
+### Administrator
+A controlled configuration workspace. The administrator maintains:
+- employees and current-shift handover assignment;
+- departments and operational areas;
+- equipment;
+- event types available to reporting roles;
+- critical controls;
+- operation identity.
+
+Referenced master data is deactivated rather than destructively deleted so historical reporting remains interpretable.
+
 The top-right role selector switches cleanly between these experiences. Each role sees only the information relevant to that role.
 
 ## Core business invariants
@@ -42,6 +53,16 @@ The top-right role selector switches cleanly between these experiences. Each rol
 8. Management dashboards are derived from governed facts rather than becoming the data model themselves.
 9. Operational loss must be classified consistently so recurring constraints can be compared across shifts.
 10. Critical-control verification has an explicit denominator: passed controls and exceptions are both retained.
+
+## Version 2.2 administration correction
+
+- Added **Administrator** to the role switcher.
+- Added controlled maintenance for employees, departments, areas, equipment, event types and critical controls.
+- Added operation identity editing.
+- Added activation/deactivation rather than destructive deletion for referenced master data.
+- Added current-shift handover assignment when creating or updating employees.
+- Administrative changes persist in the browser state and are recorded in the audit trail.
+- Mine Manager and Mine Executive remain free of configuration controls.
 
 ## Version 2.1 visual upgrade
 
@@ -112,3 +133,10 @@ InteliMine remains analytics-tool neutral. The governed data contract is the dur
 ## Site configuration
 
 Critical-control definitions, hazards, areas, equipment, targets and loss categories are mine-configured master data. The records included here demonstrate the operating model and must be aligned to the mine’s approved risk and control framework before production use.
+
+
+## Administrator
+
+Use **Role → Administrator** to maintain the operating configuration used by InteliMine. The administrator can add/edit/deactivate employees, departments, areas, equipment, event types and critical controls, and can edit the operation identity. New employees can be assigned a current-shift handover from the employee form. Administrative changes are persisted locally and recorded in the audit trail.
+
+Administrator is deliberately separate from Mine Manager and Mine Executive: configuration belongs to administration; operational decisions remain in the leadership views.

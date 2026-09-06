@@ -3,9 +3,11 @@ import { bindEmployeeExperience } from "./employee.js";
 import { renderDashboard, bindDashboardActions } from "./dashboard.js";
 import { renderExecutiveDashboard } from "./executive.js";
 import { APP_CONFIG } from "./config.js";
-import { operationById } from "./masterData.js";
+import { operationById, applyMasterData } from "./masterData.js";
+import { bindAdminExperience, renderAdmin } from "./admin.js";
 
 let state = loadState();
+applyMasterData(state.masterData);
 
 function getState() {
   return state;
@@ -13,28 +15,36 @@ function getState() {
 
 function setState(nextState) {
   state = nextState;
+  applyMasterData(state.masterData);
   saveState(state);
 }
 
+function refreshTopbarStatus() {
+  const operation = operationById(APP_CONFIG.operationId);
+  topbarStatus.textContent = `${operation?.name || "Mining Operation"} · ${APP_CONFIG.shiftName} · ${APP_CONFIG.shiftDateLabel}`;
+}
+
 function onStateChange() {
+  refreshTopbarStatus();
   renderDashboard(state);
   renderExecutiveDashboard(state);
+  renderAdmin(state);
 }
 
 const employeeExperience = bindEmployeeExperience({ getState, setState, onStateChange });
 bindDashboardActions({ getState, setState, onStateChange });
+bindAdminExperience({ getState, setState, onStateChange });
 
 const views = {
   employee: document.getElementById("employeeView"),
   manager: document.getElementById("managerView"),
-  executive: document.getElementById("executiveView")
+  executive: document.getElementById("executiveView"),
+  admin: document.getElementById("adminView")
 };
 
 const roleSelect = document.getElementById("roleSelect");
 const topbarStatus = document.getElementById("topbarStatus");
-const operation = operationById(APP_CONFIG.operationId);
-
-topbarStatus.textContent = `${operation?.name || "Mining Operation"} · ${APP_CONFIG.shiftName} · ${APP_CONFIG.shiftDateLabel}`;
+refreshTopbarStatus();
 
 function route(target) {
   const resolved = views[target] ? target : "manager";
@@ -44,6 +54,7 @@ function route(target) {
 
   if (resolved === "manager") renderDashboard(state);
   if (resolved === "executive") renderExecutiveDashboard(state);
+  if (resolved === "admin") renderAdmin(state);
   if (resolved === "employee") employeeExperience.reset();
 
   const url = new URL(window.location.href);
@@ -56,6 +67,7 @@ roleSelect.addEventListener("change", () => route(roleSelect.value));
 
 renderDashboard(state);
 renderExecutiveDashboard(state);
+renderAdmin(state);
 
 const requestedRole = new URLSearchParams(window.location.search).get("role");
 route(requestedRole || "manager");

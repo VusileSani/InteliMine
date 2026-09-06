@@ -30,7 +30,7 @@ export function bindEmployeeExperience({ getState, setState, onStateChange }) {
 
   function renderEmployeeWorkspace(employee) {
     const state = getState();
-    const attendance = attendanceFor(employee.id);
+    const attendance = attendanceFor(state, employee.id);
     const obligation = obligationFor(state, employee.id);
     const submission = submissionFor(state, employee.id);
     const status = reportingStatus(state, employee.id);
@@ -94,7 +94,7 @@ export function bindEmployeeExperience({ getState, setState, onStateChange }) {
   }
 
   function login() {
-    const employee = authenticateEmployee(employeeNumber.value, employeePin.value);
+    const employee = authenticateEmployee(getState(), employeeNumber.value, employeePin.value);
     if (!employee) {
       showStatus("Employee number or PIN is incorrect, or the employee is inactive.");
       return;

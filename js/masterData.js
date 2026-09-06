@@ -1,21 +1,21 @@
-export const OPERATIONS = Object.freeze([
+export const DEFAULT_OPERATIONS = Object.freeze([
   { id: "OP-SITE01", code: "SITE-01", name: "Mining Operation" }
 ]);
 
-export const DEPARTMENTS = Object.freeze([
+export const DEFAULT_DEPARTMENTS = Object.freeze([
   { id: "DEPT-ENG", code: "ENG", name: "Engineering" },
   { id: "DEPT-SAF", code: "SAF", name: "Safety" },
   { id: "DEPT-PROD", code: "PROD", name: "Production" }
 ]);
 
-export const AREAS = Object.freeze([
+export const DEFAULT_AREAS = Object.freeze([
   { id: "AREA-SEC3", code: "SEC-003", operationId: "OP-SITE01", name: "Section 3" },
   { id: "AREA-PANEL-B", code: "PNL-B", operationId: "OP-SITE01", name: "Panel B" },
   { id: "AREA-WORKSHOP", code: "WS-01", operationId: "OP-SITE01", name: "Engineering Workshop" },
   { id: "AREA-CONVEYOR", code: "CV-DECL", operationId: "OP-SITE01", name: "Conveyor Decline" }
 ]);
 
-export const EQUIPMENT = Object.freeze([
+export const DEFAULT_EQUIPMENT = Object.freeze([
   { id: "EQ-CV04", code: "CV-04", name: "Conveyor CV-04", equipmentClass: "CONVEYOR", areaId: "AREA-CONVEYOR", active: true },
   { id: "EQ-P18", code: "P-18", name: "Pump P-18", equipmentClass: "PUMP", areaId: "AREA-SEC3", active: true },
   { id: "EQ-DB07", code: "DB-07", name: "Distribution Board DB-07", equipmentClass: "ELECTRICAL", areaId: "AREA-SEC3", active: true },
@@ -30,7 +30,7 @@ export const EVENT_CATEGORIES = Object.freeze({
   PEOPLE: "People"
 });
 
-export const EVENT_TYPES = Object.freeze([
+export const DEFAULT_EVENT_TYPES = Object.freeze([
   { id: "EVT-VIBRATION", category: "EQUIPMENT", label: "Abnormal vibration", requiresEquipment: true, roles: ["FITTER", "OPERATOR"] },
   { id: "EVT-OVERHEATING", category: "EQUIPMENT", label: "Overheating / high temperature", requiresEquipment: true, roles: ["FITTER", "ELECTRICIAN", "OPERATOR"] },
   { id: "EVT-MECH-DEFECT", category: "EQUIPMENT", label: "Mechanical defect", requiresEquipment: true, roles: ["FITTER", "OPERATOR"] },
@@ -52,7 +52,7 @@ export const DELAY_CATEGORIES = Object.freeze([
   { id: "SERVICES", label: "Services / infrastructure" }
 ]);
 
-export const CRITICAL_CONTROLS = Object.freeze([
+export const DEFAULT_CRITICAL_CONTROLS = Object.freeze([
   { id: "CC-GROUND-ENTRY", hazardId: "GROUND_CONTROL", hazardLabel: "Ground control", label: "Workplace ground condition verified before entry" },
   { id: "CC-GROUND-ACCESS", hazardId: "GROUND_CONTROL", hazardLabel: "Ground control", label: "Access restriction / barricading in place" },
   { id: "CC-ENERGY-ISOLATION", hazardId: "ENERGY_ISOLATION", hazardLabel: "Energy isolation", label: "Isolation state verified before electrical work" },
@@ -60,6 +60,39 @@ export const CRITICAL_CONTROLS = Object.freeze([
   { id: "CC-MOBILE-PREUSE", hazardId: "MOBILE_EQUIPMENT", hazardLabel: "Mobile equipment", label: "Pre-use inspection completed" },
   { id: "CC-EMERGENCY-COMMS", hazardId: "EMERGENCY_RESPONSE", hazardLabel: "Emergency response", label: "Emergency communication channel available" }
 ]);
+
+
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+export let OPERATIONS = clone(DEFAULT_OPERATIONS);
+export let DEPARTMENTS = clone(DEFAULT_DEPARTMENTS);
+export let AREAS = clone(DEFAULT_AREAS).map(item => ({ active: true, ...item }));
+export let EQUIPMENT = clone(DEFAULT_EQUIPMENT);
+export let EVENT_TYPES = clone(DEFAULT_EVENT_TYPES).map(item => ({ active: true, ...item }));
+export let CRITICAL_CONTROLS = clone(DEFAULT_CRITICAL_CONTROLS).map(item => ({ active: true, ...item }));
+
+export function defaultMasterDataSnapshot() {
+  return {
+    operations: clone(DEFAULT_OPERATIONS),
+    departments: clone(DEFAULT_DEPARTMENTS),
+    areas: clone(DEFAULT_AREAS).map(item => ({ active: true, ...item })),
+    equipment: clone(DEFAULT_EQUIPMENT),
+    eventTypes: clone(DEFAULT_EVENT_TYPES).map(item => ({ active: true, ...item })),
+    criticalControls: clone(DEFAULT_CRITICAL_CONTROLS).map(item => ({ active: true, ...item }))
+  };
+}
+
+export function applyMasterData(snapshot) {
+  const source = snapshot || defaultMasterDataSnapshot();
+  OPERATIONS = clone(Array.isArray(source.operations) ? source.operations : DEFAULT_OPERATIONS);
+  DEPARTMENTS = clone(Array.isArray(source.departments) ? source.departments : DEFAULT_DEPARTMENTS);
+  AREAS = clone(Array.isArray(source.areas) ? source.areas : DEFAULT_AREAS).map(item => ({ active: true, ...item }));
+  EQUIPMENT = clone(Array.isArray(source.equipment) ? source.equipment : DEFAULT_EQUIPMENT);
+  EVENT_TYPES = clone(Array.isArray(source.eventTypes) ? source.eventTypes : DEFAULT_EVENT_TYPES).map(item => ({ active: true, ...item }));
+  CRITICAL_CONTROLS = clone(Array.isArray(source.criticalControls) ? source.criticalControls : DEFAULT_CRITICAL_CONTROLS).map(item => ({ active: true, ...item }));
+}
 
 export const SEVERITIES = Object.freeze([
   { id: "INFO", label: "Information" },
@@ -92,5 +125,5 @@ export const severityById = id => byId(SEVERITIES, id);
 export const issueStatusById = id => byId(ISSUE_STATUSES, id);
 
 export function eventTypesForRole(roleCode) {
-  return EVENT_TYPES.filter(type => type.roles.includes(roleCode));
+  return EVENT_TYPES.filter(type => type.active !== false && type.roles.includes(roleCode));
 }

@@ -16,7 +16,7 @@ function eventTypeOptions(roleCode) {
 }
 
 function areaOptions(defaultAreaId) {
-  return AREAS.map(area => `<option value="${escapeHtml(area.id)}" ${area.id === defaultAreaId ? "selected" : ""}>${escapeHtml(area.code)} · ${escapeHtml(area.name)}</option>`).join("");
+  return AREAS.filter(area => area.active !== false).map(area => `<option value="${escapeHtml(area.id)}" ${area.id === defaultAreaId ? "selected" : ""}>${escapeHtml(area.code)} · ${escapeHtml(area.name)}</option>`).join("");
 }
 
 function equipmentOptions() {

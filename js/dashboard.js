@@ -5,12 +5,11 @@ import {
   reportingEmployees,
   openIssues,
   observationById,
-  employeeById,
   obligationFor,
   findEmployeeByNumber
 } from "./domain.js";
 import { employeeDisplayName, employeeAreaName, reportingRoleLabel } from "./employeeMaster.js";
-import { eventTypeById, equipmentById, areaById } from "./masterData.js";
+import { eventTypeById, equipmentById, areaById, criticalControlById } from "./masterData.js";
 import { nextIssueStatus, transitionIssue, transitionLabel } from "./issueLifecycle.js";
 import { currentShiftPerformance } from "./leadership.js";
 
@@ -79,10 +78,11 @@ function issueCard(state, issue) {
 
 function controlExceptionCard(item) {
   const area = areaById(item.areaId);
+  const configured = criticalControlById(item.controlId);
   return `<div class="control-exception">
     <div>
-      <div class="attention-label">${escapeHtml(item.hazard)}</div>
-      <strong>${escapeHtml(item.control)}</strong>
+      <div class="attention-label">${escapeHtml(configured?.hazardLabel || item.hazard)}</div>
+      <strong>${escapeHtml(configured?.label || item.control)}</strong>
       <p>${escapeHtml(item.note || "Verification exception requires attention.")}</p>
     </div>
     <div class="control-meta">${escapeHtml(area?.name || "Mine area")} · ${escapeHtml(item.owner || "Supervisor")}</div>
@@ -260,7 +260,7 @@ export function bindDashboardActions({ getState, setState, onStateChange }) {
       return;
     }
 
-    const approver = findEmployeeByNumber(approverEmployeeNumber);
+    const approver = findEmployeeByNumber(state, approverEmployeeNumber);
     if (!approver || approver.reportingRole !== "SUPERVISOR") {
       statusHost.innerHTML = `<div class="status-box warning">The approver must be an identified supervisor.</div>`;
       return;

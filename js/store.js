@@ -4,8 +4,11 @@ import {
   INITIAL_CHECK_FACTS,
   INITIAL_OBSERVATIONS,
   INITIAL_ISSUES,
-  INITIAL_INTEGRATION_BATCHES
+  INITIAL_INTEGRATION_BATCHES,
+  EMPLOYEES,
+  INITIAL_ATTENDANCE
 } from "./seedData.js";
+import { defaultMasterDataSnapshot } from "./masterData.js";
 import {
   SHIFT_PERFORMANCE_HISTORY,
   CURRENT_DELAY_EVENTS,
@@ -21,6 +24,9 @@ function clone(value) {
 function initialState() {
   return {
     schemaVersion: "2.0",
+    employees: clone(EMPLOYEES),
+    attendance: clone(INITIAL_ATTENDANCE),
+    masterData: defaultMasterDataSnapshot(),
     obligations: clone(INITIAL_REPORTING_OBLIGATIONS),
     submissions: clone(INITIAL_SUBMISSIONS),
     checkFacts: clone(INITIAL_CHECK_FACTS),
@@ -40,6 +46,9 @@ function normalizeState(candidate) {
   if (!candidate || candidate.schemaVersion !== "2.0") return initialState();
   return {
     ...candidate,
+    employees: Array.isArray(candidate.employees) ? candidate.employees : clone(EMPLOYEES),
+    attendance: Array.isArray(candidate.attendance) ? candidate.attendance : clone(INITIAL_ATTENDANCE),
+    masterData: candidate.masterData && typeof candidate.masterData === "object" ? candidate.masterData : defaultMasterDataSnapshot(),
     obligations: Array.isArray(candidate.obligations) ? candidate.obligations : [],
     submissions: Array.isArray(candidate.submissions) ? candidate.submissions : [],
     checkFacts: Array.isArray(candidate.checkFacts) ? candidate.checkFacts : [],

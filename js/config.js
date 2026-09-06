@@ -1,7 +1,7 @@
 export const APP_CONFIG = Object.freeze({
   productName: "InteliMine",
-  version: "2.0",
-  releaseName: "Leadership Value",
+  version: "2.2",
+  releaseName: "Administration & Leadership Value",
   dataContractVersion: "1.2",
   reportSchemaVersion: "2.0",
   eventTaxonomyVersion: "1.2",

@@ -1,23 +1,22 @@
-import { EMPLOYEES, INITIAL_ATTENDANCE } from "./seedData.js";
 import { APP_CONFIG } from "./config.js";
 import { isEmployeeActive } from "./employeeMaster.js";
 
-export function findEmployeeByNumber(employeeNumber) {
-  return EMPLOYEES.find(employee => employee.employeeNumber === String(employeeNumber).trim()) || null;
+export function findEmployeeByNumber(state, employeeNumber) {
+  return (state.employees || []).find(employee => employee.employeeNumber === String(employeeNumber).trim()) || null;
 }
 
-export function employeeById(employeeId) {
-  return EMPLOYEES.find(employee => employee.id === employeeId) || null;
+export function employeeById(state, employeeId) {
+  return (state.employees || []).find(employee => employee.id === employeeId) || null;
 }
 
-export function authenticateEmployee(employeeNumber, pin) {
-  const employee = findEmployeeByNumber(employeeNumber);
+export function authenticateEmployee(state, employeeNumber, pin) {
+  const employee = findEmployeeByNumber(state, employeeNumber);
   if (!employee || !isEmployeeActive(employee)) return null;
   return employee.pin === String(pin).trim() ? employee : null;
 }
 
-export function attendanceFor(employeeId) {
-  return INITIAL_ATTENDANCE.find(entry => entry.employeeId === employeeId && entry.shiftInstanceId === APP_CONFIG.shiftInstanceId) || null;
+export function attendanceFor(state, employeeId) {
+  return (state.attendance || []).find(entry => entry.employeeId === employeeId && entry.shiftInstanceId === APP_CONFIG.shiftInstanceId) || null;
 }
 
 export function reportingObligations(state) {
@@ -30,7 +29,7 @@ export function obligationFor(state, employeeId) {
 
 export function reportingEmployees(state) {
   const employeeIds = new Set(reportingObligations(state).map(item => item.employeeId));
-  return EMPLOYEES.filter(employee => employeeIds.has(employee.id));
+  return (state.employees || []).filter(employee => employeeIds.has(employee.id));
 }
 
 export function submissionFor(state, employeeId) {
@@ -55,7 +54,7 @@ export function reportingStatus(state, employeeId) {
 }
 
 export function mayClockOff(state, employeeId) {
-  const attendance = attendanceFor(employeeId);
+  const attendance = attendanceFor(state, employeeId);
   if (!attendance?.clockedIn) {
     return { allowed: true, reason: "Employee is not currently clocked in.", code: "NOT_CLOCKED_IN" };
   }

@@ -52,3 +52,8 @@ The executive should be able to answer, within seconds:
 - Where are losses recurring across shifts?
 - What material risk currently requires leadership attention?
 
+
+
+## v2.2 administration correction
+
+Added a dedicated Administrator actor after identifying that the leadership-focused v2.1 release had no user-facing route for maintaining controlled master data. Administration now manages people and operational reference lists without exposing configuration controls to Mine Manager or Mine Executive. Master-data changes are persisted and applied to the live operating views while stable identifiers preserve historical record meaning.
