@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>InteliMine · Mining Shift Intelligence</title>
+  <title>MineMind v2.5 · Mine Status Signals</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
   <header class="topbar">
     <div class="brand-block">
-      <div class="eyebrow">InteliMine</div>
+      <div class="eyebrow">MineMind</div>
       <h1>Mining Shift Intelligence</h1>
       <div class="brand-tagline">People · Operations · A safer tomorrow</div>
       <div id="topbarStatus" class="topbar-status"></div>
@@ -23,7 +23,8 @@
         <option value="employee">Employee</option>
         <option value="manager">Mine Manager</option>
         <option value="executive">Mine Executive</option>
-        <option value="admin">Administrator</option>
+        <option value="admin">System Administration</option>
+        <option value="governance">Platform Governance</option>
       </select>
     </label>
   </header>
@@ -39,6 +40,7 @@
       </div>
 
       <div id="employeeLoginCard" class="card narrow-card">
+        <div id="loginMineSignals" class="login-mine-signals" aria-label="Current mine-wide status"></div>
         <h3>Sign in</h3>
         <label>Employee number<input id="employeeNumber" inputmode="numeric" autocomplete="username" placeholder="Employee number" /></label>
         <label>PIN<input id="employeePin" type="password" inputmode="numeric" autocomplete="current-password" placeholder="PIN" /></label>
@@ -74,12 +76,24 @@
     <section id="adminView" class="view hidden">
       <div class="view-header">
         <div>
-          <div class="eyebrow">Administrator</div>
+          <div class="eyebrow">System Administration</div>
           <h2>System Administration</h2>
-          <p class="view-subtitle">Maintain the controlled lists and people used by InteliMine.</p>
+          <p class="view-subtitle">Manage people, operational access and controlled mine configuration. Privileged authority is governed separately.</p>
         </div>
       </div>
       <div id="adminWorkspace"></div>
+    </section>
+
+
+    <section id="governanceView" class="view hidden">
+      <div class="view-header">
+        <div>
+          <div class="eyebrow">Platform Governance</div>
+          <h2>Authority & Access Model</h2>
+          <p class="view-subtitle">Control who administers MineMind and how application authority is labelled and delegated.</p>
+        </div>
+      </div>
+      <div id="governanceWorkspace"></div>
     </section>
   </main>
 

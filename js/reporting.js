@@ -2,6 +2,28 @@ import { REPORT_SCHEMAS } from "./reportSchemas.js";
 import { reportingRoleLabel } from "./employeeMaster.js";
 import { renderObservationComposer } from "./observation.js";
 import { EQUIPMENT } from "./masterData.js";
+const COMMON_SAFETY_FIELDS = Object.freeze([
+  { key: "safetyCondition", label: "Safety condition", type: "select", required: true, options: [
+    { value: "GOOD", label: "Good" },
+    { value: "ATTENTION", label: "Attention" },
+    { value: "CRITICAL", label: "Critical" }
+  ], analytics: { factType: "CONDITION", subjectType: "SHIFT", abnormalValues: ["ATTENTION", "CRITICAL"] } },
+  { key: "safetyUpdateType", label: "Safety update", type: "select", required: true, options: [
+    { value: "NO_CHANGE", label: "No significant safety change" },
+    { value: "NEW_HAZARD", label: "New hazard identified" },
+    { value: "OPEN_HAZARD", label: "Existing hazard remains open" },
+    { value: "CONTROL_APPLIED", label: "Control implemented" },
+    { value: "AREA_RESTRICTED", label: "Area restricted" },
+    { value: "EQUIPMENT_SAFE", label: "Equipment made safe" },
+    { value: "NEAR_MISS", label: "Near miss" },
+    { value: "INCIDENT", label: "Incident" }
+  ], analytics: { factType: "SAFETY_UPDATE", subjectType: "SHIFT", abnormalValues: ["NEW_HAZARD", "OPEN_HAZARD", "AREA_RESTRICTED", "NEAR_MISS", "INCIDENT"] } },
+  { key: "safetyHandover", label: "What safety condition must the next shift know about?", type: "textarea", required: true, placeholder: "If none, state: No material safety change this shift", analytics: { factType: "NARRATIVE_CHECK", subjectType: "SHIFT" } },
+  { key: "carrySafetyForward", label: "Carry this safety item forward to the next shift?", type: "choice", required: true, options: [
+    { value: "yes", label: "Yes" }, { value: "no", label: "No" }
+  ], analytics: { factType: "BOOLEAN_CHECK", subjectType: "SHIFT", abnormalValues: ["yes"] } }
+]);
+
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -14,7 +36,7 @@ function escapeHtml(value) {
 
 export function renderReportForm(employee, existingSubmission) {
   const roleCode = employee.reportingRole;
-  const schema = REPORT_SCHEMAS[roleCode] || [];
+  const schema = [...(REPORT_SCHEMAS[roleCode] || []), ...COMMON_SAFETY_FIELDS];
   const answers = existingSubmission?.answers || {};
 
   const fields = schema.map(field => {
@@ -98,7 +120,7 @@ export function renderReportForm(employee, existingSubmission) {
 }
 
 export function readReportAnswers(form, roleCode) {
-  const schema = REPORT_SCHEMAS[roleCode] || [];
+  const schema = [...(REPORT_SCHEMAS[roleCode] || []), ...COMMON_SAFETY_FIELDS];
   const answers = {};
   const missing = [];
   let requiresObservation = false;

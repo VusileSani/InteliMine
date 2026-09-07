@@ -1,6 +1,7 @@
 import { APP_CONFIG } from "./config.js";
 import { REPORTING_ROLES } from "./employeeMaster.js";
 import { DEPARTMENTS, AREAS, OPERATIONS } from "./masterData.js";
+import { ACCESS_SCOPES, employeeAccessSummary, normalizeAccessModel, operationalRolePresets, roleLabel, rolePresetById } from "./accessControl.js";
 
 let bindings = null;
 let activeCategory = "employees";
@@ -54,7 +55,7 @@ function itemTitle(category, item) {
 
 function itemMeta(category, item) {
   if (category === "employees") {
-    return `${item.employeeNumber} · ${REPORTING_ROLES[item.reportingRole] || item.reportingRole || "Unmapped"} · ${item.employmentStatus || "ACTIVE"}`;
+    return `${item.employeeNumber} · ${REPORTING_ROLES[item.reportingRole] || item.reportingRole || "Unmapped"} · ${roleLabel(bindings?.getState?.() || {}, item.applicationRoleId)} · ${item.employmentStatus || "ACTIVE"}`;
   }
   if (category === "equipment") return `${item.code || ""} · ${item.equipmentClass || "Equipment"}`;
   if (category === "eventTypes") return `${item.category || ""} · ${(item.roles || []).map(r => REPORTING_ROLES[r] || r).join(", ")}`;
@@ -97,6 +98,13 @@ function roleOptions(selected="") {
   return Object.entries(REPORTING_ROLES).map(([id,label]) => option(id,label,selected)).join("");
 }
 
+function applicationRoleOptions(state, selected="") {
+  return operationalRolePresets(normalizeAccessModel(state)).map(role => option(role.id, role.label, selected)).join("");
+}
+function accessScopeOptions(selected="") {
+  return Object.entries(ACCESS_SCOPES).filter(([id]) => id !== "PLATFORM").map(([id,label]) => option(id,label,selected)).join("");
+}
+
 function editItem(state) {
   return editingId ? categoryArray(state, activeCategory).find(item => item.id === editingId) || null : null;
 }
@@ -114,7 +122,10 @@ function renderForm(state) {
       <label>First name<input name="firstName" required value="${escapeHtml(item.firstName || "")}" /></label>
       <label>Last name<input name="lastName" required value="${escapeHtml(item.lastName || "")}" /></label>
       <label>Job title<input name="jobTitle" required value="${escapeHtml(item.jobTitle || "")}" /></label>
-      <label>Reporting role<select name="reportingRole" required><option value="">Choose role</option>${roleOptions(item.reportingRole)}</select></label>
+      <label>Reporting role<select name="reportingRole" required><option value="">Choose reporting role</option>${roleOptions(item.reportingRole)}</select><small class="field-help">What this person reports during a shift. This is not application authority.</small></label>
+      <label>Application role<select name="applicationRoleId" required><option value="">Choose application role</option>${applicationRoleOptions(state,item.applicationRoleId || "ops_access")}</select><small class="field-help">Controls what the employee may do in MineMind. Privileged admin roles are granted in Platform Governance.</small></label>
+      <label>Access scope<select name="accessScope" required>${accessScopeOptions(item.accessScope || "OWN_AREA")}</select></label>
+      <div class="full effective-access"><strong>Effective access</strong><span>${escapeHtml(employeeAccessSummary(state,{...item,applicationRoleId:item.applicationRoleId || "ops_access",accessScope:item.accessScope || "OWN_AREA"}))}</span></div>
       <label>Department<select name="departmentId" required><option value="">Choose department</option>${departmentOptions(item.departmentId)}</select></label>
       <label>Area<select name="areaId" required><option value="">Choose area</option>${areaOptions(item.areaId)}</select></label>
       <label>Shift group<input name="shiftGroup" value="${escapeHtml(item.shiftGroup || "")}" /></label>
@@ -241,7 +252,7 @@ function assignCurrentShift(state, employee) {
 }
 
 function saveEditor(form) {
-  const state = bindings.getState();
+  const state = normalizeAccessModel(bindings.getState());
   const category = form.dataset.category;
   const data = new FormData(form);
   let id = editingId;
@@ -253,10 +264,12 @@ function saveEditor(form) {
     if (duplicate) { setStatus("That employee number already exists.", "warning"); return; }
     id = id || `emp_${employeeNumber}`;
     const existing = item || {};
+    const requestedRole = rolePresetById(state, String(data.get("applicationRoleId")||""));
+    if (!requestedRole || requestedRole.protected) { setStatus("System Administration may assign operational MineMind roles only. Privileged authority is managed in Platform Governance.", "warning"); return; }
     item = {
       ...existing, id, employeeNumber,
       pin:String(data.get("pin")||"").trim(), firstName:String(data.get("firstName")||"").trim(), lastName:String(data.get("lastName")||"").trim(),
-      jobTitle:String(data.get("jobTitle")||"").trim(), reportingRole:String(data.get("reportingRole")||""), departmentId:String(data.get("departmentId")||""), areaId:String(data.get("areaId")||""),
+      jobTitle:String(data.get("jobTitle")||"").trim(), reportingRole:String(data.get("reportingRole")||""), applicationRoleId:String(data.get("applicationRoleId")||"ops_access"), accessScope:String(data.get("accessScope")||"OWN_AREA"), departmentId:String(data.get("departmentId")||""), areaId:String(data.get("areaId")||""),
       operationId:existing.operationId || APP_CONFIG.operationId, supervisorEmployeeNo:String(data.get("supervisorEmployeeNo")||"").trim(), employmentStatus:existing.employmentStatus || "ACTIVE",
       shiftGroup:String(data.get("shiftGroup")||"").trim(), workLocation:existing.workLocation || "", badgeId:existing.badgeId || "", mobileNumber:existing.mobileNumber || "", email:existing.email || "",
       sourceSystem:existing.sourceSystem || "INTELIMINE_ADMIN", sourceRecordId:existing.sourceRecordId || employeeNumber,
@@ -276,7 +289,7 @@ function saveEditor(form) {
     const idx=arr.findIndex(x=>x.id===id); if(idx>=0) arr[idx]=item; else arr.push(item);
   }
 
-  state.auditTrail.push({type:"ADMIN_MASTER_DATA_CHANGE",category,itemId:id,action:editingId?"UPDATE":"CREATE",at:nowIso()});
+  state.auditTrail.push({type: category === "employees" ? "EMPLOYEE_ACCESS_UPDATED" : "ADMIN_MASTER_DATA_CHANGE",category,itemId:id,action:editingId?"UPDATE":"CREATE",applicationRoleId:item?.applicationRoleId,accessScope:item?.accessScope,actor:"System Administrator",at:nowIso()});
   bindings.setState(state);
   editingId=null;
   bindings.onStateChange();

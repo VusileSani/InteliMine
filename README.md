@@ -1,6 +1,17 @@
-# InteliMine — Version 2.2
+# MineMind — Version 2.5
 
-InteliMine turns compulsory shift handover into structured operational intelligence while keeping each role focused on the decisions it actually needs to make.
+MineMind turns compulsory shift handover into structured operational intelligence while keeping each role focused on the decisions it actually needs to make.
+
+
+## Version 2.5 mine status signals
+
+- Carries forward the v2.3 safety-continuity work and v2.4 access-governance model.
+- Adds two extremely restrained mine-wide indicators directly to the employee sign-in card: **Safety** and **Operational Performance**.
+- Uses Green / Yellow / Red signals with text labels so status is not communicated by colour alone.
+- The indicators are deliberately informational and do not turn sign-in into a dashboard.
+- System Administration manually sets both statuses based on current overall mine metrics; MineMind does not auto-derive them.
+- Existing administrator-set status reasons remain available in authenticated actor views, while the login treatment stays compact.
+- Preserves structured safety capture, safety-rich continuity reporting, observation/issue accountability, action ownership/closure, analytics-ready facts, configurable authority labels, scoped delegations and protected governance tiers from the earlier builds.
 
 ## Product experiences
 
@@ -128,7 +139,7 @@ The intended production path remains:
 
 `Operational capture → governed operational data → governed analytics dataset / warehouse → preferred BI / analytics platform`
 
-InteliMine remains analytics-tool neutral. The governed data contract is the durable asset.
+MineMind remains analytics-tool neutral. The governed data contract is the durable asset.
 
 ## Site configuration
 
@@ -137,6 +148,19 @@ Critical-control definitions, hazards, areas, equipment, targets and loss catego
 
 ## Administrator
 
-Use **Role → Administrator** to maintain the operating configuration used by InteliMine. The administrator can add/edit/deactivate employees, departments, areas, equipment, event types and critical controls, and can edit the operation identity. New employees can be assigned a current-shift handover from the employee form. Administrative changes are persisted locally and recorded in the audit trail.
+Use **Role → Administrator** to maintain the operating configuration used by MineMind. The administrator can add/edit/deactivate employees, departments, areas, equipment, event types and critical controls, and can edit the operation identity. New employees can be assigned a current-shift handover from the employee form. Administrative changes are persisted locally and recorded in the audit trail.
 
 Administrator is deliberately separate from Mine Manager and Mine Executive: configuration belongs to administration; operational decisions remain in the leadership views.
+
+
+## v2.3 Safety Continuity update
+- Safety capture is embedded in every employee shift handover rather than added as a separate safety workflow.
+- All actor views show administrator-set Production Status and Safety Status indicators (Good / Attention / Critical).
+- System Administration can update the mine-wide status reason and publish it across the prototype; values are stored locally for prototype testing and are not automatically inferred.
+- Manager and Executive reports include realistic mock safety-continuity data, carried-forward actions, production context, and clear separation of fact, recorded interpretation and action.
+- Production implementation should persist status history and permissions server-side; this prototype intentionally does not claim automatic safety scoring.
+
+
+## v2.4 Access Governance
+
+This build separates employment/job information, shift reporting role and MineMind application authority. System Administration can assign only operational application roles and scope. Protected System Administrator and Platform Governance authority is granted/revoked only from Platform Governance. Role labels and descriptions are configurable without changing the stable underlying authority tier. Privileged and employee access changes are written to the audit trail. The role switcher remains a prototype/demo navigation surface; production authorization must be enforced server-side.

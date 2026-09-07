@@ -9,6 +9,7 @@ import {
   INITIAL_ATTENDANCE
 } from "./seedData.js";
 import { defaultMasterDataSnapshot } from "./masterData.js";
+import { normalizeAccessModel } from "./accessControl.js";
 import {
   SHIFT_PERFORMANCE_HISTORY,
   CURRENT_DELAY_EVENTS,
@@ -38,13 +39,15 @@ function initialState() {
     controlVerifications: clone(CRITICAL_CONTROL_VERIFICATIONS),
     integrationBatches: clone(INITIAL_INTEGRATION_BATCHES),
     auditTrail: [],
+    rolePresets: [],
+    platformAuthorities: [],
     createdAt: new Date().toISOString()
   };
 }
 
 function normalizeState(candidate) {
   if (!candidate || candidate.schemaVersion !== "2.0") return initialState();
-  return {
+  const normalized = {
     ...candidate,
     employees: Array.isArray(candidate.employees) ? candidate.employees : clone(EMPLOYEES),
     attendance: Array.isArray(candidate.attendance) ? candidate.attendance : clone(INITIAL_ATTENDANCE),
@@ -59,16 +62,19 @@ function normalizeState(candidate) {
     delayEvents: Array.isArray(candidate.delayEvents) ? candidate.delayEvents : clone(CURRENT_DELAY_EVENTS),
     controlVerifications: Array.isArray(candidate.controlVerifications) ? candidate.controlVerifications : clone(CRITICAL_CONTROL_VERIFICATIONS),
     integrationBatches: Array.isArray(candidate.integrationBatches) ? candidate.integrationBatches : [],
-    auditTrail: Array.isArray(candidate.auditTrail) ? candidate.auditTrail : []
+    auditTrail: Array.isArray(candidate.auditTrail) ? candidate.auditTrail : [],
+    rolePresets: Array.isArray(candidate.rolePresets) ? candidate.rolePresets : [],
+    platformAuthorities: Array.isArray(candidate.platformAuthorities) ? candidate.platformAuthorities : []
   };
+  return normalizeAccessModel(normalized);
 }
 
 export function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? normalizeState(JSON.parse(raw)) : initialState();
+    return raw ? normalizeState(JSON.parse(raw)) : normalizeAccessModel(initialState());
   } catch {
-    return initialState();
+    return normalizeAccessModel(initialState());
   }
 }
 
@@ -77,7 +83,7 @@ export function saveState(state) {
 }
 
 export function resetState() {
-  const state = initialState();
+  const state = normalizeAccessModel(initialState());
   saveState(state);
   return state;
 }

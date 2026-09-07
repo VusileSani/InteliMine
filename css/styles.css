@@ -607,3 +607,28 @@ input:focus, textarea:focus, select:focus {
 .empty-state { color:var(--muted); padding:18px 0; }
 @media (max-width:900px) { .admin-layout{grid-template-columns:1fr;} .admin-editor{position:static;} }
 @media (max-width:620px) { .admin-form{grid-template-columns:1fr;} .admin-form .full{grid-column:auto;} .admin-toolbar,.admin-row{align-items:stretch;flex-direction:column;} .admin-row-actions{width:100%;} .admin-row-actions button{flex:1;} .admin-role-field{grid-template-columns:1fr;} }
+
+
+/* MineMind safety continuity + manual mine status */
+.operational-status-strip{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:-4px 0 16px}.mine-status{display:flex;align-items:center;gap:10px;min-height:54px;background:#fff;border:1px solid var(--line);padding:8px 13px;box-shadow:var(--shadow);text-align:left}.mine-status small,.mine-status strong{display:block}.mine-status small{color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.06em}.mine-status strong{font-size:.94rem;margin-top:2px}.status-dot{width:13px;height:13px;border-radius:50%;box-shadow:0 0 0 4px rgba(0,0,0,.04)}.mine-status.good .status-dot{background:#2f9a66}.mine-status.attention .status-dot{background:var(--amber)}.mine-status.critical .status-dot{background:var(--red)}.status-context{color:var(--muted);font-size:.76rem}.operational-status-admin{margin-bottom:16px}.status-admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.status-admin-grid fieldset{border:1px solid var(--line);border-radius:12px;padding:12px}.status-admin-grid legend{font-weight:850;padding:0 6px}.status-admin-actions{grid-column:1/-1;display:flex;align-items:end;gap:12px}.status-admin-actions label{flex:1;margin:0}.safety-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:8px 0 16px}.safety-kpis>div{border:1px solid var(--line);border-radius:10px;padding:11px;background:#f7faf9}.safety-kpis strong,.safety-kpis span{display:block}.safety-kpis strong{font-size:1.25rem}.safety-kpis span{color:var(--muted);font-size:.76rem;margin-top:3px}.safety-table-wrap{overflow:auto}.safety-table{width:100%;border-collapse:collapse;min-width:780px}.safety-table th,.safety-table td{text-align:left;padding:10px 8px;border-top:1px solid var(--line);font-size:.79rem}.safety-table th{color:var(--muted);font-size:.68rem;text-transform:uppercase;letter-spacing:.05em}.fact-box{display:grid;grid-template-columns:150px 1fr;gap:8px 12px;margin-top:16px;padding:13px;border-radius:11px;background:#f4f7f6;font-size:.82rem}.fact-box strong{color:var(--green-dark)}
+@media(max-width:700px){.status-admin-grid{grid-template-columns:1fr}.status-admin-actions{grid-column:auto;flex-direction:column;align-items:stretch}.safety-kpis{grid-template-columns:repeat(2,1fr)}.fact-box{grid-template-columns:1fr}.operational-status-strip{align-items:stretch}.mine-status{flex:1;min-width:145px}.status-context{width:100%}}
+
+/* v2.4 access governance */
+.field-help{display:block;margin-top:.35rem;color:var(--muted,#667085);font-size:.78rem;line-height:1.35}
+.effective-access{display:flex;gap:.55rem;align-items:flex-start;padding:.8rem .9rem;border:1px solid rgba(148,163,184,.28);border-radius:12px;background:rgba(15,23,42,.025)}
+.effective-access span{color:var(--muted,#667085);font-size:.88rem;line-height:1.45}
+.governance-stack{display:grid;gap:1rem}
+.role-preset-grid{display:grid;gap:.75rem}
+.role-preset-row{display:grid;grid-template-columns:minmax(180px,.8fr) minmax(180px,1fr) minmax(170px,.8fr);gap:.7rem;align-items:end;padding:1rem;border:1px solid rgba(148,163,184,.25);border-radius:14px}
+.role-preset-row>div:first-child{display:flex;flex-direction:column;gap:.2rem}
+.compact-governance-form{margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(148,163,184,.22)}
+.audit-list{display:grid;gap:.55rem}.audit-row{display:grid;grid-template-columns:minmax(180px,.7fr) minmax(260px,1.3fr);gap:.35rem .8rem;padding:.75rem 0;border-bottom:1px solid rgba(148,163,184,.18)}.audit-row small{grid-column:2;color:var(--muted,#667085)}
+@media(max-width:850px){.role-preset-row{grid-template-columns:1fr}.audit-row{grid-template-columns:1fr}.audit-row small{grid-column:1}}
+
+/* v2.5 — deliberately restrained mine-wide signals on employee sign-in */
+.login-mine-signals{display:flex;align-items:center;gap:14px;margin:-2px 0 14px;padding-bottom:11px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.login-signal{display:inline-flex;align-items:center;gap:7px;min-height:24px;color:var(--muted);font-size:.72rem;line-height:1;white-space:nowrap}
+.login-signal .status-dot{width:8px;height:8px;box-shadow:none}
+.login-signal strong{font-size:.66rem;letter-spacing:.055em;text-transform:uppercase;color:var(--ink);font-weight:800}
+.login-signal.good .status-dot{background:#2f9a66}.login-signal.attention .status-dot{background:var(--amber)}.login-signal.critical .status-dot{background:var(--red)}
+@media(max-width:520px){.login-mine-signals{gap:10px 14px}.login-signal{font-size:.69rem}}
