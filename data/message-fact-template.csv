@@ -1,0 +1,1 @@
+message_id,operation_id,audience_type,audience_id,title,body,priority,author_user_id,author_role,created_at_utc,expires_at_utc,status,requires_acknowledgement,source_channel

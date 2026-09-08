@@ -7,6 +7,7 @@ import { operationById, applyMasterData } from "./masterData.js";
 import { bindAdminExperience, renderAdmin } from "./admin.js";
 import { bindGovernanceExperience, renderGovernance } from "./governance.js";
 import { renderLoginMineSignals, renderOperationalStatusBars, renderStatusAdminControl, renderSafetyMockReports } from "./operationalStatus.js";
+import { bindCommunications, renderBrand, renderMessageBoards, renderSupervisorComposer } from "./communications.js";
 
 let state = loadState();
 applyMasterData(state.masterData);
@@ -36,12 +37,16 @@ function onStateChange() {
   renderOperationalStatusBars();
   renderStatusAdminControl();
   renderSafetyMockReports();
+  renderMessageBoards(state);
+  renderBrand(state);
+  renderSupervisorComposer();
 }
 
 const employeeExperience = bindEmployeeExperience({ getState, setState, onStateChange });
 bindDashboardActions({ getState, setState, onStateChange });
 bindAdminExperience({ getState, setState, onStateChange });
 bindGovernanceExperience({ getState, setState, onStateChange });
+bindCommunications({ getState, setState, onStateChange });
 
 const views = {
   employee: document.getElementById("employeeView"),
@@ -86,6 +91,9 @@ renderGovernance(state);
 renderOperationalStatusBars();
 renderStatusAdminControl();
 renderSafetyMockReports();
+renderMessageBoards(state);
+renderBrand(state);
+renderSupervisorComposer();
 
 const requestedRole = new URLSearchParams(window.location.search).get("role");
 route(requestedRole || "manager");

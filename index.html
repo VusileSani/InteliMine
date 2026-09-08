@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MineMind v2.5 · Mine Status Signals</title>
+  <title>MineMind v2.6 · Communication & Mine Identity</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
+  <div id="mineBrandBanner" class="mine-brand-banner hidden"><span></span></div>
   <header class="topbar">
     <div class="brand-block">
-      <div class="eyebrow">MineMind</div>
+      <div class="brand-title-row"><img class="mine-brand-logo hidden" alt="Mine logo" /><div class="eyebrow">MineMind</div></div>
       <h1>Mining Shift Intelligence</h1>
       <div class="brand-tagline">People · Operations · A safer tomorrow</div>
       <div id="topbarStatus" class="topbar-status"></div>
@@ -39,6 +40,8 @@
         </div>
       </div>
 
+      <div id="employeeMessageBoard" class="message-board card compact-card"></div>
+
       <div id="employeeLoginCard" class="card narrow-card">
         <div id="loginMineSignals" class="login-mine-signals" aria-label="Current mine-wide status"></div>
         <h3>Sign in</h3>
@@ -59,6 +62,8 @@
           <p class="view-subtitle">See what requires intervention now, not everything that happened.</p>
         </div>
       </div>
+      <div id="managerMessageBoard" class="message-board card compact-card"></div>
+      <div id="managerMessageComposer"></div>
       <div id="managerDashboard"></div>
     </section>
 
@@ -70,6 +75,7 @@
           <p class="view-subtitle">Performance, risk and recurring loss across the operating rhythm.</p>
         </div>
       </div>
+      <div id="executiveMessageBoard" class="message-board card compact-card"></div>
       <div id="executiveDashboard"></div>
     </section>
 
@@ -81,6 +87,7 @@
           <p class="view-subtitle">Manage people, operational access and controlled mine configuration. Privileged authority is governed separately.</p>
         </div>
       </div>
+      <div id="adminMessageBoard" class="message-board card compact-card"></div>
       <div id="adminWorkspace"></div>
     </section>
 
@@ -93,6 +100,7 @@
           <p class="view-subtitle">Control who administers MineMind and how application authority is labelled and delegated.</p>
         </div>
       </div>
+      <div id="governanceMessageBoard" class="message-board card compact-card"></div>
       <div id="governanceWorkspace"></div>
     </section>
   </main>

@@ -10,6 +10,7 @@ import {
 } from "./seedData.js";
 import { defaultMasterDataSnapshot } from "./masterData.js";
 import { normalizeAccessModel } from "./accessControl.js";
+import { defaultMessages } from "./communications.js";
 import {
   SHIFT_PERFORMANCE_HISTORY,
   CURRENT_DELAY_EVENTS,
@@ -41,6 +42,8 @@ function initialState() {
     auditTrail: [],
     rolePresets: [],
     platformAuthorities: [],
+    messages: defaultMessages(),
+    mineIdentity: { mineName: "Demo Mining Operation", logoDataUrl: "", bannerDataUrl: "", updatedAt: null },
     createdAt: new Date().toISOString()
   };
 }
@@ -64,7 +67,9 @@ function normalizeState(candidate) {
     integrationBatches: Array.isArray(candidate.integrationBatches) ? candidate.integrationBatches : [],
     auditTrail: Array.isArray(candidate.auditTrail) ? candidate.auditTrail : [],
     rolePresets: Array.isArray(candidate.rolePresets) ? candidate.rolePresets : [],
-    platformAuthorities: Array.isArray(candidate.platformAuthorities) ? candidate.platformAuthorities : []
+    platformAuthorities: Array.isArray(candidate.platformAuthorities) ? candidate.platformAuthorities : [],
+    messages: Array.isArray(candidate.messages) ? candidate.messages : defaultMessages(),
+    mineIdentity: candidate.mineIdentity && typeof candidate.mineIdentity === "object" ? candidate.mineIdentity : { mineName: "Demo Mining Operation", logoDataUrl: "", bannerDataUrl: "", updatedAt: null }
   };
   return normalizeAccessModel(normalized);
 }

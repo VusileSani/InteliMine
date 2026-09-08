@@ -164,3 +164,7 @@ Administrator is deliberately separate from Mine Manager and Mine Executive: con
 ## v2.4 Access Governance
 
 This build separates employment/job information, shift reporting role and MineMind application authority. System Administration can assign only operational application roles and scope. Protected System Administrator and Platform Governance authority is granted/revoked only from Platform Governance. Role labels and descriptions are configurable without changing the stable underlying authority tier. Privileged and employee access changes are written to the audit trail. The role switcher remains a prototype/demo navigation surface; production authorization must be enforced server-side.
+
+
+## v2.6 communication and mine identity
+Every actor landing page now includes a compact operational Message Board. System Administration can publish mine-wide notices and configure mine-specific logo/banner identity. The Mine Manager workspace can publish team-scoped notices. These are modeled as auditable institutional records rather than transient UI copy. See `RELEASE-NOTES-v2.6.md` for the production backend contract.

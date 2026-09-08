@@ -14,7 +14,8 @@ const CATEGORY_LABELS = {
   equipment: "Equipment",
   eventTypes: "Event types",
   criticalControls: "Critical controls",
-  operations: "Operation"
+  operations: "Operation",
+  communicationIdentity: "Communication & Mine Identity"
 };
 
 function escapeHtml(value) {
@@ -38,6 +39,7 @@ function option(value, label, selected) {
 }
 
 function categoryArray(state, category) {
+  if (category === "communicationIdentity") return [];
   if (category === "employees") return state.employees || [];
   const md = state.masterData || {};
   return md[category] || [];
@@ -181,9 +183,43 @@ function simpleCodeNameForm(heading, item, editing, category, noun) {
     </form>`;
 }
 
+
+function renderCommunicationIdentity(state) {
+  const identity = state.mineIdentity || {};
+  const messages = Array.isArray(state.messages) ? state.messages : [];
+  const active = messages.filter(m => m.active !== false && (!m.expiresAt || Date.parse(m.expiresAt) > Date.now()));
+  return `
+    <div class="comms-admin-grid">
+      <section class="card comms-admin-card">
+        <div class="section-title"><div><div class="eyebrow">Communication</div><h3>Mine-wide message board</h3><p>Publish short operational notices to every MineMind landing page.</p></div></div>
+        <form id="adminMessageForm" class="admin-form">
+          <label class="full">Title<input name="title" maxlength="80" required placeholder="Mine-wide notice" /></label>
+          <label class="full">Message<textarea name="body" maxlength="500" rows="4" required placeholder="What should everyone know?"></textarea></label>
+          <label>Priority<select name="priority"><option value="NOTICE">Notice</option><option value="IMPORTANT">Important</option></select></label>
+          <label>Expiry<select name="expiry"><option value="8">8 hours</option><option value="24">24 hours</option><option value="72">3 days</option><option value="168">7 days</option></select></label>
+          <div class="full admin-form-actions"><button class="primary" type="submit">Publish mine-wide</button></div>
+        </form>
+        <div class="admin-summary">${active.length} active message${active.length===1?"":"s"}</div>
+        <div class="message-admin-list">${active.slice(0,6).map(m => `<div class="message-admin-row"><div><strong>${escapeHtml(m.title)}</strong><span>${escapeHtml(m.audienceType === "ALL" ? "Mine-wide" : "Team")} · ${escapeHtml(m.authorRole || "")}</span></div><button class="small ghost-danger" data-message-deactivate="${escapeHtml(m.id)}">Deactivate</button></div>`).join("") || `<div class="empty-state">No active messages.</div>`}</div>
+      </section>
+      <section class="card comms-admin-card">
+        <div class="section-title"><div><div class="eyebrow">Corporate identity</div><h3>Mine identity</h3><p>Add operation-specific identity without replacing the MineMind product brand.</p></div></div>
+        <form id="mineIdentityForm" class="admin-form">
+          <label class="full">Mine / operation name<input name="mineName" maxlength="80" value="${escapeHtml(identity.mineName || "")}" placeholder="Mining Operation" /></label>
+          <label class="full">Mine logo<input name="logo" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" /><small class="field-help">Compact logo used alongside MineMind. Recommended: square or horizontal transparent PNG.</small></label>
+          ${identity.logoDataUrl ? `<div class="full brand-preview"><img src="${identity.logoDataUrl}" alt="Current mine logo" /><button type="button" class="small secondary" data-clear-brand="logo">Remove logo</button></div>` : ""}
+          <label class="full">Corporate banner<input name="banner" type="file" accept="image/png,image/jpeg,image/webp" /><small class="field-help">Optional restrained banner used above the application header.</small></label>
+          ${identity.bannerDataUrl ? `<div class="full banner-preview" style="background-image:url(${identity.bannerDataUrl})"><span>${escapeHtml(identity.mineName || "Mine identity")}</span><button type="button" class="small secondary" data-clear-brand="banner">Remove banner</button></div>` : ""}
+          <div class="full admin-form-actions"><button class="primary" type="submit">Save mine identity</button></div>
+        </form>
+      </section>
+    </div>`;
+}
+
 export function renderAdmin(state) {
   const host = document.getElementById("adminWorkspace");
   if (!host) return;
+  if (activeCategory === "communicationIdentity") { host.innerHTML = `<div class="admin-toolbar"><label>Manage<select id="adminCategory">${Object.entries(CATEGORY_LABELS).map(([id,label]) => option(id,label,activeCategory)).join("")}</select></label></div>${renderCommunicationIdentity(state)}<div id="adminStatus"></div>`; return; }
   if (activeCategory === "operations" && !editingId) editingId = (state.masterData?.operations || [])[0]?.id || null;
   host.innerHTML = `
     <div class="admin-layout">
@@ -307,6 +343,29 @@ function toggleItem(id) {
   bindings.setState(state); bindings.onStateChange(); renderAdmin(bindings.getState());
 }
 
+
+function fileToDataUrl(file) {
+  return new Promise((resolve,reject)=>{ const reader=new FileReader(); reader.onload=()=>resolve(String(reader.result||"")); reader.onerror=reject; reader.readAsDataURL(file); });
+}
+
+async function saveMineIdentity(form) {
+  const state=bindings.getState(); const fd=new FormData(form); const current={...(state.mineIdentity||{})};
+  current.mineName=String(fd.get("mineName")||"").trim() || "Mining Operation";
+  const logo=fd.get("logo"), banner=fd.get("banner");
+  if (logo instanceof File && logo.size) current.logoDataUrl=await fileToDataUrl(logo);
+  if (banner instanceof File && banner.size) current.bannerDataUrl=await fileToDataUrl(banner);
+  current.updatedAt=nowIso(); state.mineIdentity=current;
+  state.auditTrail.push({type:"MINE_IDENTITY_UPDATED",actor:"System Administrator",at:nowIso()});
+  bindings.setState(state); bindings.onStateChange(); renderAdmin(bindings.getState()); setStatus("Mine identity saved.");
+}
+function publishAdminMessage(form){
+  const state=bindings.getState(); const fd=new FormData(form); const hours=Number(fd.get("expiry")||24);
+  state.messages=Array.isArray(state.messages)?state.messages:[]; state.messages.unshift({id:`MSG-${Date.now()}`,audienceType:"ALL",audienceId:"ALL",title:String(fd.get("title")||"").trim(),body:String(fd.get("body")||"").trim(),priority:String(fd.get("priority")||"NOTICE"),authorRole:"System Administration",authorName:"MineMind Administrator",createdAt:nowIso(),expiresAt:new Date(Date.now()+hours*3600000).toISOString(),active:true});
+  state.auditTrail.push({type:"MINE_WIDE_MESSAGE_PUBLISHED",actor:"System Administrator",at:nowIso()}); bindings.setState(state); bindings.onStateChange(); renderAdmin(bindings.getState()); setStatus("Mine-wide message published.");
+}
+function deactivateMessage(id){ const state=bindings.getState(); const m=(state.messages||[]).find(x=>x.id===id); if(!m)return; m.active=false; state.auditTrail.push({type:"MESSAGE_DEACTIVATED",messageId:id,actor:"System Administrator",at:nowIso()}); bindings.setState(state); bindings.onStateChange(); renderAdmin(bindings.getState()); }
+function clearBrand(kind){ const state=bindings.getState(); state.mineIdentity=state.mineIdentity||{}; if(kind==="logo")state.mineIdentity.logoDataUrl=""; if(kind==="banner")state.mineIdentity.bannerDataUrl=""; state.auditTrail.push({type:"MINE_IDENTITY_ASSET_REMOVED",asset:kind,actor:"System Administrator",at:nowIso()}); bindings.setState(state); bindings.onStateChange(); renderAdmin(bindings.getState()); }
+
 export function bindAdminExperience(args) {
   bindings=args;
   const host=document.getElementById("adminWorkspace"); if(!host)return;
@@ -316,7 +375,13 @@ export function bindAdminExperience(args) {
   host.addEventListener("click", e=>{
     const edit=e.target.closest("[data-admin-edit]"); if(edit){ editingId=edit.dataset.adminEdit; renderAdmin(bindings.getState()); return; }
     const tog=e.target.closest("[data-admin-toggle]"); if(tog){ toggleItem(tog.dataset.adminToggle); return; }
+    const msg=e.target.closest("[data-message-deactivate]"); if(msg){deactivateMessage(msg.dataset.messageDeactivate);return;}
+    const brand=e.target.closest("[data-clear-brand]"); if(brand){clearBrand(brand.dataset.clearBrand);return;}
     if(e.target.closest("#adminAddButton") || e.target.closest("[data-admin-cancel]")){ editingId=null; renderAdmin(bindings.getState()); return; }
   });
-  host.addEventListener("submit", e=>{ if(e.target?.id!=="adminEditor")return; e.preventDefault(); saveEditor(e.target); });
+  host.addEventListener("submit", async e=>{
+    if(e.target?.id==="adminMessageForm"){e.preventDefault();publishAdminMessage(e.target);return;}
+    if(e.target?.id==="mineIdentityForm"){e.preventDefault();await saveMineIdentity(e.target);return;}
+    if(e.target?.id!=="adminEditor")return; e.preventDefault(); saveEditor(e.target);
+  });
 }
