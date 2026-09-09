@@ -1,7 +1,7 @@
-import { APP_CONFIG } from "./config.js";
 import { executivePerformance } from "./leadership.js";
 import { openIssues } from "./domain.js";
 import { areaById } from "./masterData.js";
+import { currentShift } from "./operationalModel.js";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -44,6 +44,7 @@ export function renderExecutiveDashboard(state) {
   const host = document.getElementById("executiveDashboard");
   if (!host) return;
 
+  const shift = currentShift(state);
   const performance = executivePerformance(state);
   const { averages, trends, history, lossRanking, current } = performance;
   const issues = openIssues(state);
@@ -74,7 +75,7 @@ export function renderExecutiveDashboard(state) {
   }
   if (materialIssues.length) {
     attention.push(attentionCard(
-      "Material actions",
+      "Priority actions",
       `${materialIssues.length} high-priority action${materialIssues.length === 1 ? "" : "s"} open`,
       materialIssues.map(issue => issue.title).join(" · "),
       "watch"
@@ -90,7 +91,8 @@ export function renderExecutiveDashboard(state) {
   }
 
   host.innerHTML = `
-    <div class="context-line">8-shift operating view · through ${escapeHtml(APP_CONFIG.shiftDateLabel)}</div>
+    <div class="context-line">8-shift operating view · active ${escapeHtml(shift?.label || shift?.shiftName || "shift")}</div>
+    <div class="status-box neutral compact-note"><strong>Prototype integration metrics.</strong> Production, availability, delay and control-conformance values are seeded placeholders until connected to authoritative mine systems. MineMind-native actions and handovers remain state-driven.</div>
 
     <div class="executive-metrics">
       ${executiveMetric(
@@ -165,7 +167,7 @@ export function renderExecutiveDashboard(state) {
     </div>
 
     <section class="card section-block">
-      <div class="section-title"><h3>Current material risk</h3><span class="muted">Only open high-priority items</span></div>
+      <div class="section-title"><h3>Current priority exceptions</h3><span class="muted">Only open high-priority items</span></div>
       ${materialIssues.length ? `<div class="material-risk-list">
         ${materialIssues.map(issue => `<div class="material-risk-row">
           <div><strong>${escapeHtml(issue.title)}</strong><span>${escapeHtml(areaById(issue.areaId)?.name || "Mine area")} · ${escapeHtml(issue.ownerRole || "Shift Supervisor")}</span></div>

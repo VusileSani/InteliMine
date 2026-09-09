@@ -54,6 +54,7 @@ export const SHIFT_PERFORMANCE_HISTORY = Object.freeze([
 export const CURRENT_DELAY_EVENTS = Object.freeze([
   {
     delayId: "DLY-20260905-001",
+    shiftInstanceId: APP_CONFIG.shiftInstanceId, operationId: APP_CONFIG.operationId,
     category: "GROUND",
     label: "Ground condition clearance",
     minutes: 42,
@@ -64,6 +65,7 @@ export const CURRENT_DELAY_EVENTS = Object.freeze([
   },
   {
     delayId: "DLY-20260905-002",
+    shiftInstanceId: APP_CONFIG.shiftInstanceId, operationId: APP_CONFIG.operationId,
     category: "EQUIPMENT",
     label: "CV-04 engineering stop",
     minutes: 31,
@@ -74,6 +76,7 @@ export const CURRENT_DELAY_EVENTS = Object.freeze([
   },
   {
     delayId: "DLY-20260905-003",
+    shiftInstanceId: APP_CONFIG.shiftInstanceId, operationId: APP_CONFIG.operationId,
     category: "PEOPLE",
     label: "Crew reassignment",
     minutes: 21,
@@ -87,6 +90,7 @@ export const CURRENT_DELAY_EVENTS = Object.freeze([
 export const CRITICAL_CONTROL_VERIFICATIONS = Object.freeze([
   {
     verificationId: "CCV-20260905-001",
+    shiftInstanceId: APP_CONFIG.shiftInstanceId, operationId: APP_CONFIG.operationId,
     controlId: "CC-GROUND-ENTRY",
     hazardId: "GROUND_CONTROL",
     hazard: "Ground control",
@@ -99,6 +103,7 @@ export const CRITICAL_CONTROL_VERIFICATIONS = Object.freeze([
   },
   {
     verificationId: "CCV-20260905-002",
+    shiftInstanceId: APP_CONFIG.shiftInstanceId, operationId: APP_CONFIG.operationId,
     controlId: "CC-GROUND-ACCESS",
     hazardId: "GROUND_CONTROL",
     hazard: "Ground control",
@@ -111,6 +116,7 @@ export const CRITICAL_CONTROL_VERIFICATIONS = Object.freeze([
   },
   {
     verificationId: "CCV-20260905-003",
+    shiftInstanceId: APP_CONFIG.shiftInstanceId, operationId: APP_CONFIG.operationId,
     controlId: "CC-ENERGY-ISOLATION",
     hazardId: "ENERGY_ISOLATION",
     hazard: "Energy isolation",
@@ -123,6 +129,7 @@ export const CRITICAL_CONTROL_VERIFICATIONS = Object.freeze([
   },
   {
     verificationId: "CCV-20260905-004",
+    shiftInstanceId: APP_CONFIG.shiftInstanceId, operationId: APP_CONFIG.operationId,
     controlId: "CC-MACHINERY-GUARD",
     hazardId: "MOVING_MACHINERY",
     hazard: "Moving machinery",
@@ -135,6 +142,7 @@ export const CRITICAL_CONTROL_VERIFICATIONS = Object.freeze([
   },
   {
     verificationId: "CCV-20260905-005",
+    shiftInstanceId: APP_CONFIG.shiftInstanceId, operationId: APP_CONFIG.operationId,
     controlId: "CC-MOBILE-PREUSE",
     hazardId: "MOBILE_EQUIPMENT",
     hazard: "Mobile equipment",
@@ -147,6 +155,7 @@ export const CRITICAL_CONTROL_VERIFICATIONS = Object.freeze([
   },
   {
     verificationId: "CCV-20260905-006",
+    shiftInstanceId: APP_CONFIG.shiftInstanceId, operationId: APP_CONFIG.operationId,
     controlId: "CC-EMERGENCY-COMMS",
     hazardId: "EMERGENCY_RESPONSE",
     hazard: "Emergency response",

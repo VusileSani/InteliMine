@@ -1,0 +1,12 @@
+processStageId,processStageCode,processStageName,sequenceOrder,active,processModelVersion
+STAGE-DRILLING,DRILLING,Drilling,10,true,1.1
+STAGE-CHARGING,CHARGING,Charging,20,true,1.1
+STAGE-CLEARANCE,CLEARANCE,Clearance,30,true,1.1
+STAGE-BLASTING,BLASTING,Blasting,40,true,1.1
+STAGE-REENTRY,RE_ENTRY,Re-entry,50,true,1.1
+STAGE-CLEANING,CLEANING,Cleaning / mucking,60,true,1.1
+STAGE-HAULAGE,HAULAGE,Haulage,70,true,1.1
+STAGE-PLANT-FEED,PLANT_FEED,Plant feed,80,true,1.1
+STAGE-MILLING,MILLING,Milling,90,true,1.1
+STAGE-FLOTATION,FLOTATION,Flotation,100,true,1.1
+STAGE-RECOVERY,RECOVERY,Recovery,110,true,1.1

@@ -1,0 +1,111 @@
+MineMind v2.8 — Restraint & Continuity
+Verified distributable source validation
+UTC: 2026-09-09T06:53:47Z
+
+SOURCE TREE
+PASS · 79 source files before validation manifest
+PASS · obsolete duplicate root v2.5–v2.7 release files removed; historical copies retained under docs/archive
+PASS · superseded v2.7 test harnesses excluded from distributable
+
+JAVASCRIPT / APPLICATION
+PASS · 30 JavaScript/MJS files syntax-valid
+PASS · 49 analytical rows · 100% contract completeness
+Observations 4 · checks 21 · issues 3 · handovers 2
+Process stages 11 · work contexts 7 retained as hidden analytical context
+PASS · v2.8 app composition root imported and rendered against DOM stubs
+Document listeners bound: 5
+
+DATA CONTRACTS
+PASS · 24 CSV contract/template files structurally valid
+
+RESTRAINT PACKAGE ASSERTIONS
+PASS · v2.8 title/version marker
+PASS · no corporate banner control in active UI
+PASS · v2.7 test harnesses excluded
+PASS · historical root release files removed
+
+SOURCE FILE SHA-256 MANIFEST
+The hashes below cover every source/distribution file except this validation manifest itself.
+c5b2980d1094baab40135bb7d30a632cee0ba1b11341fe42a3eca2856af91568  ./README.md
+9b0d2ba376246850366531d9d5f1c8db9d601e20591c2375e1e073d2a0a8dd6c  ./RELEASE-NOTES-v2.8.md
+5d1ef49837d59c38102b7791675517a204aa5bb1a62e1f8049f0442a7b21010f  ./RESTRAINT-IMPLEMENTATION-v2.8.md
+bd1b3b53004de9209c190affb271f98ea085d34d2abc1ffc9995dfc005c30972  ./assets/mining-operations-underlay.jpg
+df7058e927bb693e6604809beb90ccb33ae453f7527eef77f3af413a7eb30579  ./css/styles.css
+15fc8c6cf455f02a2d895290d701313357dd2de5d74d318de83379b2258ef362  ./data/area-master-template.csv
+a00466ef2d9756a6b222e04df236e456edb0fea04f50eff6e8e9d84d9182fd26  ./data/critical-control-verification-fact-template.csv
+16044dd291025a9f7c55edf08ba0cc6275c2d7f4333503e76ddc061276d180b2  ./data/delay-event-fact-template.csv
+2b5597c03e7c9f51632bafc7e874b03e950b6b7a32be1f610e574af4bf7ef99b  ./data/employee-master-template.csv
+5c3d76680ac9cf84103333256c08cda85a024d3fb638da5dda7d585f581d6ba0  ./data/equipment-master-template.csv
+c2ae0a54b1fd14745043aade96b229fa68f0d691eb61a64134682f3632117aeb  ./data/event-type-taxonomy.csv
+109bacfb77f9f0ccf8234a448cb259312e447630647789f2094a864a4a85b8d8  ./data/handover-delivery-fact-template.csv
+47b2e2af2f6e51af3a5446faad66b12455be686977cca411977cd2448a53786e  ./data/integration-batch-template.csv
+944230d74a3c39cf8b574122a885475da3ddfa4074e6647577978acf64cbc8fb  ./data/issue-fact-template.csv
+d3f3d193ac7e0dea1fa8ea2ef69ddd67cc831a55147bfcbc1c145388d8ea96c4  ./data/message-acknowledgement-fact-template.csv
+bac14cefab89c3628dcb0e9e1daa02f64ce87dbf839a7868fe49003bf1a1fd15  ./data/message-fact-template.csv
+7e49c2784458a0359d5e52043dc5420e691c8d8b317786fc3c921a885e72b6df  ./data/mine-identity-history-template.csv
+58a1f493f2d8459f3bd0294d8734dcfc923c78d7d52e685d435614a3be6688b9  ./data/observation-fact-template.csv
+f11e2e14fa90c5fce9758ebe9441a11ac57c4e8065ab4cf5a3c146a09e6bc980  ./data/operational-status-history-template.csv
+321a1598e9f962100935c7d09f18bd4b80289ac673678491688eaf2908fb1410  ./data/process-stage-master-template.csv
+18545c45bc4fe674e5861adcec85b806881ea3688b977a497acbca52f788bcc4  ./data/reporting-compliance-fact-template.csv
+35e9ca4aa9107f2e31d2cdca4fe96978a71a99194fb096fddb693298f16b34ef  ./data/reporting-obligation-template.csv
+17a425c66bbc6e160beb4dcae0bfeea6d08255b6975e21d214b08fd791a4c7df  ./data/reporting-template.csv
+ca319db089fcf25178ccaa2e506ec2b62ef0bb94a242c4be9219f97c4fa0595e  ./data/role-mapping-template.csv
+3dc067e71a70c498d547d351e054e3f61b562ea5a93bf2320a856918898244f2  ./data/shift-assignment-template.csv
+2c439ec628c783c693392c688e2ab787b18543350941b10d58c1f98cc6f9c9a1  ./data/shift-check-fact-template.csv
+c0f12dcf11b01f3ce1f0aba0200aca0dc87c93a749401685c6b6acbc16281571  ./data/shift-instance-template.csv
+ff3391b1c4b63b700f11493125685a1aec24b9f15e8505fd93164735a5eb1020  ./data/shift-performance-fact-template.csv
+8bd0c8570efc33aed1cb935edbd0441c92cabdee3cdb93a905061fc16878c48f  ./data/work-context-master-template.csv
+49bb85eb2538aae3b0839563f89f77c674e4f7b0395a94978dad37a8528567ea  ./docs/MineMind_Permissions_and_Rights_Management_Guide_v2_4.docx
+f905dce94e270ed26669e4704253be3ce32cbc1420ffcdea4fdf150e6dbc7e88  ./docs/PERMISSIONS-AND-RIGHTS-GUIDE.md
+46ca98fc8aa2cdec34b379b5a4f4e011b569b46f1d178a91c1023417962edc88  ./docs/analytics/ANALYTICS-DATA-CONTRACT.md
+8d2f23d3108c14b4fa0926e8de5cde7d5f20deba07de6863b0e4bf8d105206b5  ./docs/analytics/ANALYTICS-INTEGRITY.md
+78a0944491993c53d4a6baa0da63356c985c3212fe6a323b8bc2df4e358d6596  ./docs/analytics/BI-READINESS.md
+ae348b8b11f26e82b40715d03e54ee24a1f617ea0fb3e6ca89bc364ffd0e4018  ./docs/analytics/EVENT-TAXONOMY.md
+9ef58939363c188f01f35446beea7b1c11a53a9f48c455decb42d40346935e9b  ./docs/archive/AUDIT-RESOLUTION-v2.7.md
+789f1b2332c51ef4e158a5c9eb133c65059b3921724cd60ef253cd29d1cab721  ./docs/archive/RELEASE-NOTES-v2.5.md
+3f2ad0593fe465329ca84f3ad3e335f3effea081b40c45a9cc6b84519e1b9a88  ./docs/archive/RELEASE-NOTES-v2.6.md
+9b8193e5bbe5b96fa1285524616911948a42386dface3a1ec90b3db5827eb490  ./docs/archive/RELEASE-NOTES-v2.7.md
+66e6a7a878ca19765ab7ec96b5bd4f49128464922837efa768ad4dbdee23da15  ./docs/archive/SANITY-CHECK-v2.4.md
+5f1fe02ad657f2b1aebf36a765e049c37d0ad9b48c765cc900da9ec522cdbe92  ./docs/archive/SYSTEM-INSPECTION.md
+2192da951b1b911ade886f5b8100504fb61f657771f1200255f6267cf53fb16b  ./docs/archive/VALIDATION-v2.7.txt
+e62b56d653ca28cd085cc4ccded8ef3154d36cb747f838da5d3bf35f42407be6  ./docs/integration/EMPLOYEE-MASTER-CONTRACT.md
+d9aff054a68ded2657bf07c460e52b5c73d8b90a72f47500dbba4d63fe5839ff  ./docs/integration/INTEGRATION-HUB.md
+1e5ae9857c78a06d2940bd635b5825bfd6b4e535f69612b19105cf35f9f18469  ./docs/integration/PROVENANCE-CONTRACT.md
+f877b8da7439fa299e991672c9e05e246eb2d01baf29cd1b2f23ba24d6fd278f  ./docs/integration/REPORTING-OBLIGATION-CONTRACT.md
+1953e103034be2cc5fd8853ef5b958eaf03dba37c92b058725c7a36971417e05  ./docs/integration/SHIFT-INSTANCE-CONTRACT.md
+1d01b4b78c0bd33519a5d0458e03fbc9211740567d2cf8269438dbb18ee7c817  ./docs/integration/T_AND_A-CONTRACT.md
+b8b399a7f4f86de7e1997c3eb2b2f36221c83e51f1211adcea179b7dfce3f87d  ./index.html
+a2a215924f2034aa351f6596fd4439662fb856376b69c0abc3dc9ed471d977d6  ./js/accessControl.js
+8be67edb9e59787b38fd572c838b305c20b9615fd2f3cf5b8389f21e867f0f10  ./js/admin.js
+89191928510810f24e7b8147b9e58d01f76d21a53fa7f145d4d32b459cff2f7c  ./js/analyticsModel.js
+32328dc613289efd4b720fc6b7bd3a7843c5c0ab7dd48e1853cf5faa4579837e  ./js/app.js
+6aa7f4acd4b2b3a55816abc10fb04e554e796774edf4d73d8c92889c759c3422  ./js/communications.js
+4525e0b04f92bb2facfb5b21f016e1cd9244e144a32395905e1297cafae1ebea  ./js/config.js
+8122109e82e8307fe57728e41e70323bdfbfb15de6d9fc4c16190681c9dbfe35  ./js/context.js
+cfb8220ac322b8aad549dbde2cb0210d247b17e1f1f284574426bfc2d3d20798  ./js/dashboard.js
+a2f20fecddda4e8bd0d4ccc4ce0ee3a92b081ab8b1cffcaad4afa0c272dc9957  ./js/domain.js
+326a945bb80e9a465d78514a1280e4e04313a8d5bfee2358908784c2e3042a23  ./js/employee.js
+07d83c78fbd1302f9cda11139b4d56fd1b673235382e97d3ebeb0aacf5c6183e  ./js/employeeMaster.js
+4b9ed8b7a553899446edcc7048b6835bc75952c283f0ce33913b39c8cb0fb218  ./js/executive.js
+4f079b8c4bad1dcae26d0c4eff3961b40a49ece1c64ae276b5876b7be5fbc34f  ./js/governance.js
+ea95bb0db8253ccf99af2ec8b815fdb98a1185b4279d0c9c88eaca6de6983a74  ./js/issueLifecycle.js
+158bb99c26691884e3fd8b2a3a6f5dcd3437317a7b5c1ba1fb322ebe1461b190  ./js/leadership.js
+060d0942349f479848c865dc1fe4c8d0ef346f8edbb1e51961b322451768f880  ./js/leadershipData.js
+138c2264115a4c95943b4e212f5113a2d35ca998dc73eb0a4164229261ea14d3  ./js/masterData.js
+5822bf34fcdc570264d2b06e1f98672db0c57ee0cf09e855f1dd066df2a5892f  ./js/observation.js
+4c720d2245c2b893e618a66ef271970be5e856564dadf4a2e93661c1d527ffec  ./js/operationalIntelligence.js
+8ba891467acfa9d38b21fabce6a35ed2479af44156b406ea89b8eefa50aa31af  ./js/operationalModel.js
+a89be876f70f5ec958cf2fa75407d195b5783366fb51b81c7d7d9d3f660f6d6d  ./js/operationalStatus.js
+174d7e08b6b754668cec5e44ac78c0d95f10adfeca05f27488f8c61bf7a36713  ./js/records.js
+e7420f8bb8345f9b6f38fd7a4c0ac3868a8e3a9e183a7a00678014086a7d30cb  ./js/reportSchemas.js
+65f02c233a4e053b1af07fa6c096d29d194ff5645cdb923c69df8171cd7105ac  ./js/reporting.js
+5f5ed02768c7ec43e52e5869cbda99a4524f02bfa106c6424fbc4a30b55dd3f6  ./js/roleMappings.js
+00974362d2d69665affd91d69dafd232c2e6ebf31f3e82cbc11e5728c5a802bc  ./js/seedData.js
+c416639664478db92871a6c45b09c2b099fd787b71a90f1b4818faa10d3cb9aa  ./js/shift.js
+499dfda3e7d72817d002c8ab1a70c2defb406c5ce791a290a7244d2dac2a2b25  ./js/store.js
+bad4a16b06d72a4d9ffe2aa0f077b3a26ebb251bd5de3089375c26cf5499cc19  ./tools/v28-composition-smoke.mjs
+d5b2beb2e8afed9079b1c166767eaf397836a1a8c994513a696cb9bb3aa8b0c9  ./tools/v28-invariant-test.mjs
+
+STATIC LINKAGE
+PASS · 93 relative JavaScript import links resolve
+PASS · 2 local index.html asset/script/style references resolve

@@ -1,0 +1,8 @@
+workContextId,workContextCode,workContextName,workContextType,areaId,active,processModelVersion
+WC-PANEL-B,PANEL-B,Panel B face,FACE_PANEL,AREA-PANEL-B,true,1.1
+WC-PANEL-B-ROUND-01,PB-R01,Panel B blast round 01,BLAST_ROUND,AREA-PANEL-B,true,1.1
+WC-SEC3-HAUL,SEC3-HAUL,Section 3 haul route,HAUL_ROUTE,AREA-SEC3,true,1.1
+WC-CRUSHER-2,CR2,Crusher 2 / feed point,PLANT_FEED_POINT,AREA-SEC3,true,1.1
+WC-MILL-1,MILL-1,Mill circuit 1,MILL_CIRCUIT,AREA-SEC3,true,1.1
+WC-FLOT-1,FLOT-1,Flotation circuit 1,FLOTATION_CIRCUIT,AREA-SEC3,true,1.1
+WC-RECOVERY-1,REC-1,Recovery / downstream process,RECOVERY_UNIT,AREA-SEC3,true,1.1

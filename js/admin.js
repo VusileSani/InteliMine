@@ -2,6 +2,7 @@ import { APP_CONFIG } from "./config.js";
 import { REPORTING_ROLES } from "./employeeMaster.js";
 import { DEPARTMENTS, AREAS, OPERATIONS } from "./masterData.js";
 import { ACCESS_SCOPES, employeeAccessSummary, normalizeAccessModel, operationalRolePresets, roleLabel, rolePresetById } from "./accessControl.js";
+import { currentShift } from "./operationalModel.js";
 
 let bindings = null;
 let activeCategory = "employees";
@@ -125,7 +126,7 @@ function renderForm(state) {
       <label>Last name<input name="lastName" required value="${escapeHtml(item.lastName || "")}" /></label>
       <label>Job title<input name="jobTitle" required value="${escapeHtml(item.jobTitle || "")}" /></label>
       <label>Reporting role<select name="reportingRole" required><option value="">Choose reporting role</option>${roleOptions(item.reportingRole)}</select><small class="field-help">What this person reports during a shift. This is not application authority.</small></label>
-      <label>Application role<select name="applicationRoleId" required><option value="">Choose application role</option>${applicationRoleOptions(state,item.applicationRoleId || "ops_access")}</select><small class="field-help">Controls what the employee may do in MineMind. Privileged admin roles are granted in Platform Governance.</small></label>
+      <label>Application role<select name="applicationRoleId" required><option value="">Choose application role</option>${applicationRoleOptions(state,item.applicationRoleId || "ops_access")}</select><small class="field-help">Controls what the employee may do in MineMind. Protected platform authority remains outside normal POC administration.</small></label>
       <label>Access scope<select name="accessScope" required>${accessScopeOptions(item.accessScope || "OWN_AREA")}</select></label>
       <div class="full effective-access"><strong>Effective access</strong><span>${escapeHtml(employeeAccessSummary(state,{...item,applicationRoleId:item.applicationRoleId || "ops_access",accessScope:item.accessScope || "OWN_AREA"}))}</span></div>
       <label>Department<select name="departmentId" required><option value="">Choose department</option>${departmentOptions(item.departmentId)}</select></label>
@@ -208,8 +209,6 @@ function renderCommunicationIdentity(state) {
           <label class="full">Mine / operation name<input name="mineName" maxlength="80" value="${escapeHtml(identity.mineName || "")}" placeholder="Mining Operation" /></label>
           <label class="full">Mine logo<input name="logo" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" /><small class="field-help">Compact logo used alongside MineMind. Recommended: square or horizontal transparent PNG.</small></label>
           ${identity.logoDataUrl ? `<div class="full brand-preview"><img src="${identity.logoDataUrl}" alt="Current mine logo" /><button type="button" class="small secondary" data-clear-brand="logo">Remove logo</button></div>` : ""}
-          <label class="full">Corporate banner<input name="banner" type="file" accept="image/png,image/jpeg,image/webp" /><small class="field-help">Optional restrained banner used above the application header.</small></label>
-          ${identity.bannerDataUrl ? `<div class="full banner-preview" style="background-image:url(${identity.bannerDataUrl})"><span>${escapeHtml(identity.mineName || "Mine identity")}</span><button type="button" class="small secondary" data-clear-brand="banner">Remove banner</button></div>` : ""}
           <div class="full admin-form-actions"><button class="primary" type="submit">Save mine identity</button></div>
         </form>
       </section>
@@ -267,20 +266,21 @@ function employeeContext(state, employee) {
 }
 
 function assignCurrentShift(state, employee) {
-  const existingAttendance = (state.attendance || []).find(x => x.employeeId === employee.id && x.shiftInstanceId === APP_CONFIG.shiftInstanceId);
+  const shift=currentShift(state); if(!shift)return;
+  const existingAttendance = (state.attendance || []).find(x => x.employeeId === employee.id && x.shiftInstanceId === shift.shiftInstanceId);
   if (!existingAttendance) {
-    const attendance = { attendanceId:`ATT-${employee.employeeNumber}-${Date.now()}`, employeeId:employee.id, shiftInstanceId:APP_CONFIG.shiftInstanceId, clockedIn:true, clockInAt:nowIso(), sourceSystem:"INTELIMINE_ADMIN" };
+    const attendance = { attendanceId:`ATT-${employee.employeeNumber}-${Date.now()}`, employeeId:employee.id, shiftInstanceId:shift.shiftInstanceId, clockedIn:true, clockInAt:nowIso(), sourceSystem:"INTELIMINE_ADMIN" };
     state.attendance.push(attendance);
     state.obligations.push({
-      obligationId:`OBL-${APP_CONFIG.shiftInstanceId}-${employee.employeeNumber}-${Date.now()}`,
-      shiftInstanceId:APP_CONFIG.shiftInstanceId,
-      shiftId:APP_CONFIG.shiftId,
+      obligationId:`OBL-${shift.shiftInstanceId}-${employee.employeeNumber}-${Date.now()}`,
+      shiftInstanceId:shift.shiftInstanceId,
+      shiftId:shift.shiftId,
       employeeId:employee.id,
       reportingRequired:true,
       createdAt:attendance.clockInAt,
       createdFrom:"ADMIN_SHIFT_ASSIGNMENT",
       sourceAttendanceId:attendance.attendanceId,
-      dueBy:APP_CONFIG.shiftEndLocal,
+      dueBy:shift.endsAtLocal,
       employeeContext:employeeContext(state, employee),
       versions:{ dataContractVersion:APP_CONFIG.dataContractVersion, reportSchemaVersion:APP_CONFIG.reportSchemaVersion, eventTaxonomyVersion:APP_CONFIG.eventTaxonomyVersion, masterDataVersion:APP_CONFIG.masterDataVersion }
     });
@@ -301,7 +301,7 @@ function saveEditor(form) {
     id = id || `emp_${employeeNumber}`;
     const existing = item || {};
     const requestedRole = rolePresetById(state, String(data.get("applicationRoleId")||""));
-    if (!requestedRole || requestedRole.protected) { setStatus("System Administration may assign operational MineMind roles only. Privileged authority is managed in Platform Governance.", "warning"); return; }
+    if (!requestedRole || requestedRole.protected) { setStatus("System Administration may assign operational MineMind roles only. Protected platform authority is not exposed in the POC.", "warning"); return; }
     item = {
       ...existing, id, employeeNumber,
       pin:String(data.get("pin")||"").trim(), firstName:String(data.get("firstName")||"").trim(), lastName:String(data.get("lastName")||"").trim(),
@@ -351,9 +351,9 @@ function fileToDataUrl(file) {
 async function saveMineIdentity(form) {
   const state=bindings.getState(); const fd=new FormData(form); const current={...(state.mineIdentity||{})};
   current.mineName=String(fd.get("mineName")||"").trim() || "Mining Operation";
-  const logo=fd.get("logo"), banner=fd.get("banner");
+  const logo=fd.get("logo");
   if (logo instanceof File && logo.size) current.logoDataUrl=await fileToDataUrl(logo);
-  if (banner instanceof File && banner.size) current.bannerDataUrl=await fileToDataUrl(banner);
+  delete current.bannerDataUrl;
   current.updatedAt=nowIso(); state.mineIdentity=current;
   state.auditTrail.push({type:"MINE_IDENTITY_UPDATED",actor:"System Administrator",at:nowIso()});
   bindings.setState(state); bindings.onStateChange(); renderAdmin(bindings.getState()); setStatus("Mine identity saved.");
@@ -364,7 +364,7 @@ function publishAdminMessage(form){
   state.auditTrail.push({type:"MINE_WIDE_MESSAGE_PUBLISHED",actor:"System Administrator",at:nowIso()}); bindings.setState(state); bindings.onStateChange(); renderAdmin(bindings.getState()); setStatus("Mine-wide message published.");
 }
 function deactivateMessage(id){ const state=bindings.getState(); const m=(state.messages||[]).find(x=>x.id===id); if(!m)return; m.active=false; state.auditTrail.push({type:"MESSAGE_DEACTIVATED",messageId:id,actor:"System Administrator",at:nowIso()}); bindings.setState(state); bindings.onStateChange(); renderAdmin(bindings.getState()); }
-function clearBrand(kind){ const state=bindings.getState(); state.mineIdentity=state.mineIdentity||{}; if(kind==="logo")state.mineIdentity.logoDataUrl=""; if(kind==="banner")state.mineIdentity.bannerDataUrl=""; state.auditTrail.push({type:"MINE_IDENTITY_ASSET_REMOVED",asset:kind,actor:"System Administrator",at:nowIso()}); bindings.setState(state); bindings.onStateChange(); renderAdmin(bindings.getState()); }
+function clearBrand(kind){ const state=bindings.getState(); state.mineIdentity=state.mineIdentity||{}; if(kind==="logo")state.mineIdentity.logoDataUrl=""; state.auditTrail.push({type:"MINE_IDENTITY_ASSET_REMOVED",asset:kind,actor:"System Administrator",at:nowIso()}); bindings.setState(state); bindings.onStateChange(); renderAdmin(bindings.getState()); }
 
 export function bindAdminExperience(args) {
   bindings=args;

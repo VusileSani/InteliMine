@@ -1,29 +1,7 @@
-import { REPORT_SCHEMAS } from "./reportSchemas.js";
+import { reportSchemaForRole } from "./reportSchemas.js";
 import { reportingRoleLabel } from "./employeeMaster.js";
 import { renderObservationComposer } from "./observation.js";
-import { EQUIPMENT } from "./masterData.js";
-const COMMON_SAFETY_FIELDS = Object.freeze([
-  { key: "safetyCondition", label: "Safety condition", type: "select", required: true, options: [
-    { value: "GOOD", label: "Good" },
-    { value: "ATTENTION", label: "Attention" },
-    { value: "CRITICAL", label: "Critical" }
-  ], analytics: { factType: "CONDITION", subjectType: "SHIFT", abnormalValues: ["ATTENTION", "CRITICAL"] } },
-  { key: "safetyUpdateType", label: "Safety update", type: "select", required: true, options: [
-    { value: "NO_CHANGE", label: "No significant safety change" },
-    { value: "NEW_HAZARD", label: "New hazard identified" },
-    { value: "OPEN_HAZARD", label: "Existing hazard remains open" },
-    { value: "CONTROL_APPLIED", label: "Control implemented" },
-    { value: "AREA_RESTRICTED", label: "Area restricted" },
-    { value: "EQUIPMENT_SAFE", label: "Equipment made safe" },
-    { value: "NEAR_MISS", label: "Near miss" },
-    { value: "INCIDENT", label: "Incident" }
-  ], analytics: { factType: "SAFETY_UPDATE", subjectType: "SHIFT", abnormalValues: ["NEW_HAZARD", "OPEN_HAZARD", "AREA_RESTRICTED", "NEAR_MISS", "INCIDENT"] } },
-  { key: "safetyHandover", label: "What safety condition must the next shift know about?", type: "textarea", required: true, placeholder: "If none, state: No material safety change this shift", analytics: { factType: "NARRATIVE_CHECK", subjectType: "SHIFT" } },
-  { key: "carrySafetyForward", label: "Carry this safety item forward to the next shift?", type: "choice", required: true, options: [
-    { value: "yes", label: "Yes" }, { value: "no", label: "No" }
-  ], analytics: { factType: "BOOLEAN_CHECK", subjectType: "SHIFT", abnormalValues: ["yes"] } }
-]);
-
+import { EQUIPMENT, eventTypeById } from "./masterData.js";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -34,16 +12,35 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-export function renderReportForm(employee, existingSubmission) {
+function quickCaptureCarryForward(quickCaptures=[]) {
+  if(!quickCaptures.length) return "";
+  return `<details class="compact-disclosure handover-capture-review" open>
+    <summary><div><strong>Captured during this shift</strong><span>Already recorded — untick only what should not carry forward</span></div><span class="chevron">›</span></summary>
+    <div class="capture-carry-list">
+      ${quickCaptures.map(item=>`<label class="capture-carry-row">
+        <input type="checkbox" name="carryObservationId" value="${escapeHtml(item.observationId)}" checked />
+        <span><strong>${escapeHtml(eventTypeById(item.eventTypeId)?.label||"Observation")}</strong><small>${escapeHtml(item.narrative)} · ${escapeHtml(item.severityId||"INFO")}</small></span>
+      </label>`).join("")}
+    </div>
+  </details>`;
+}
+
+function questionAttrs(field) {
+  const base=`data-question="${escapeHtml(field.key)}"`;
+  if (!field.requiredWhen) return base;
+  return `${base} data-required-when-key="${escapeHtml(field.requiredWhen.key)}" data-required-when-values="${escapeHtml((field.requiredWhen.values||[]).join(","))}"`;
+}
+
+export function renderReportForm(employee, existingSubmission, {quickCaptures=[]}={}) {
   const roleCode = employee.reportingRole;
-  const schema = [...(REPORT_SCHEMAS[roleCode] || []), ...COMMON_SAFETY_FIELDS];
+  const schema = reportSchemaForRole(roleCode);
   const answers = existingSubmission?.answers || {};
 
   const fields = schema.map(field => {
     const value = answers[field.key] || "";
     if (field.type === "choice") {
       return `
-        <div class="question" data-question="${escapeHtml(field.key)}">
+        <div class="question" ${questionAttrs(field)}>
           <div class="question-title">${escapeHtml(field.label)}</div>
           <div class="choice-row">
             ${field.options.map(option => `
@@ -58,7 +55,7 @@ export function renderReportForm(employee, existingSubmission) {
 
     if (field.type === "select") {
       return `
-        <div class="question" data-question="${escapeHtml(field.key)}">
+        <div class="question" ${questionAttrs(field)}>
           <div class="question-title">${escapeHtml(field.label)}</div>
           <select name="${escapeHtml(field.key)}">
             <option value="">Choose</option>
@@ -69,7 +66,7 @@ export function renderReportForm(employee, existingSubmission) {
 
     if (field.type === "equipment") {
       return `
-        <div class="question" data-question="${escapeHtml(field.key)}">
+        <div class="question" ${questionAttrs(field)}>
           <div class="question-title">${escapeHtml(field.label)}</div>
           <select name="${escapeHtml(field.key)}">
             <option value="">Choose equipment</option>
@@ -80,14 +77,14 @@ export function renderReportForm(employee, existingSubmission) {
 
     if (field.type === "textarea") {
       return `
-        <div class="question" data-question="${escapeHtml(field.key)}">
+        <div class="question" ${questionAttrs(field)}>
           <div class="question-title">${escapeHtml(field.label)}</div>
           <textarea name="${escapeHtml(field.key)}" placeholder="${escapeHtml(field.placeholder || "")}">${escapeHtml(value)}</textarea>
         </div>`;
     }
 
     return `
-      <div class="question" data-question="${escapeHtml(field.key)}">
+      <div class="question" ${questionAttrs(field)}>
         <div class="question-title">${escapeHtml(field.label)}</div>
         <input type="text" name="${escapeHtml(field.key)}" value="${escapeHtml(value)}" placeholder="${escapeHtml(field.placeholder || "")}" />
       </div>`;
@@ -106,10 +103,9 @@ export function renderReportForm(employee, existingSubmission) {
         </div>
         <span class="badge outstanding">Required</span>
       </div>
-      <p class="muted">Complete the required checks so the next shift receives a clear, usable handover.</p>
-      <div class="role-report-section">
-        ${fields}
-      </div>
+      <p class="muted">Record only what the next shift needs to understand, continue or act on.</p>
+      <div class="role-report-section">${fields}</div>
+      ${quickCaptureCarryForward(quickCaptures)}
       ${renderObservationComposer(employee)}
       <div id="reportFormStatus"></div>
       <div class="form-actions">
@@ -119,25 +115,43 @@ export function renderReportForm(employee, existingSubmission) {
     </form>`;
 }
 
+export function bindReportConditionalFields(form) {
+  if (!form) return () => {};
+  const refresh = () => {
+    for (const node of form.querySelectorAll("[data-required-when-key]")) {
+      const key=node.dataset.requiredWhenKey;
+      const allowed=(node.dataset.requiredWhenValues||"").split(",").filter(Boolean);
+      const control=form.elements[key];
+      const value=control?.value||"";
+      const visible=allowed.includes(value);
+      node.classList.toggle("hidden",!visible);
+      for(const input of node.querySelectorAll("input,select,textarea")) input.disabled=!visible;
+    }
+  };
+  form.addEventListener("change",refresh);
+  refresh();
+  return refresh;
+}
+
 export function readReportAnswers(form, roleCode) {
-  const schema = [...(REPORT_SCHEMAS[roleCode] || []), ...COMMON_SAFETY_FIELDS];
+  const schema = reportSchemaForRole(roleCode);
   const answers = {};
   const missing = [];
   let requiresObservation = false;
 
   for (const field of schema) {
     let value = "";
-    if (field.type === "choice") {
-      value = form.querySelector(`[name="${CSS.escape(field.key)}"]:checked`)?.value || "";
-    } else {
-      value = form.elements[field.key]?.value?.trim() || "";
-    }
-
-    if (field.required && !value) missing.push(field.label);
-    if (field.triggersObservation && value === "yes") requiresObservation = true;
-    if (Array.isArray(field.analytics?.abnormalValues) && field.analytics.abnormalValues.includes(value)) requiresObservation = true;
+    if (field.type === "choice") value = form.querySelector(`[name="${CSS.escape(field.key)}"]:checked`)?.value || "";
+    else value = form.elements[field.key]?.value?.trim() || "";
     answers[field.key] = value;
+    if (field.triggersObservation && value === "yes") requiresObservation = true;
   }
 
-  return { answers, missing, requiresObservation };
+  for (const field of schema) {
+    const requiredByCondition=field.requiredWhen && field.requiredWhen.key && (field.requiredWhen.values||[]).includes(answers[field.requiredWhen.key]);
+    if ((field.required || requiredByCondition) && !answers[field.key]) missing.push(field.label);
+  }
+
+  const carryObservationIds=[...form.querySelectorAll?.('[name="carryObservationId"]:checked')||[]].map(input=>input.value).filter(Boolean);
+  return { answers, missing, requiresObservation, carryObservationIds };
 }

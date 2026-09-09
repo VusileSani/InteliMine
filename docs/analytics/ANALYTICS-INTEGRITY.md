@@ -1,10 +1,25 @@
-# Analytics Integrity
+# MineMind Analytics Integrity — v2.8
 
-InteliMine follows four integrity rules:
+`analyticsDataQuality()` validates canonical references and core lineage for the restrained v2.8 fact contract.
 
-1. **No denominator loss.** Normal conditions are retained as structured check facts.
-2. **Observation is not workflow.** An observation is immutable; an issue owns changing status.
-3. **History cannot be rewritten by current master data.** Facts retain the employee/role/org context valid at capture time.
-4. **Meaning is versioned.** A future change to a report question or event taxonomy cannot silently change what an old record meant.
+## Checks currently enforced
+- observation identity, frozen employee context, shift, operation, area, event taxonomy and severity;
+- process-stage/work-context references when present;
+- analytical version envelope on observations;
+- structured-check identity and shift/employee context;
+- reporting-obligation identity and shift grain;
+- issue observation lineage, canonical context and valid named assignee;
+- issue status constrained to `OPEN`, `IN_PROGRESS` or `CLOSED` after normalization;
+- shift-performance grain;
+- delay and critical-control records owning their own shift and operation identifiers;
+- every supplied common-safety answer having a structured check fact;
+- handover source/target shift references, including prevention of source-shift self-routing;
+- carried observation IDs resolving to preserved observations;
+- operational-status history resolving to the operation.
 
-These rules are intended to keep the operational dataset useful for downstream analytics years after capture.
+Readiness-gate and material-movement checks were removed together with those fact families from the active v2.8 POC contract.
+
+`tools/v28-invariant-test.mjs` also includes a negative safety-fact regression and direct continuity/routing checks.
+
+## Production strengthening
+Before production, add schema validation at write boundaries, transactional/idempotent integration handling, server-side authorization, controlled taxonomy migrations and warehouse reconciliation. A quality percentage is only a summary; the underlying error list remains authoritative.

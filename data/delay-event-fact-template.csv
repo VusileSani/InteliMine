@@ -1,1 +1,1 @@
-delayId,shiftInstanceId,operationId,category,timeClass,areaId,equipmentId,delayMinutes,estimatedTonnesImpact,label,dataContractVersion
+delayId,shiftInstanceId,operationId,category,timeClass,areaId,equipmentId,delayMinutes,estimatedTonnesImpact,label,dataContractVersion,sourceType

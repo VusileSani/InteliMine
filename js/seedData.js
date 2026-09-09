@@ -130,7 +130,11 @@ export const INITIAL_SUBMISSIONS = Object.freeze([
       generalCondition: "ATTENTION_REQUIRED",
       equipmentConcern: "yes",
       outstandingWork: "Inspect bearing alignment on next shift",
-      handoverNote: "Monitor CV-04 before full load"
+      handoverNote: "Monitor CV-04 before full load",
+      safetyCondition: "ATTENTION",
+      safetyUpdateType: "CONTROL_APPLIED",
+      safetyHandover: "Monitor CV-04 before full load and confirm engineering inspection.",
+      carrySafetyForward: "yes"
     },
     employeeContext: employeeSnapshot("emp_104782"),
     versions: versions(),
@@ -154,7 +158,11 @@ export const INITIAL_SUBMISSIONS = Object.freeze([
       incidentOrNearMiss: "no",
       correctiveAction: "Area barricaded and supervisor informed",
       outstandingSafety: "yes",
-      handoverNote: "Re-inspection required before next entry"
+      handoverNote: "Re-inspection required before next entry",
+      safetyCondition: "CRITICAL",
+      safetyUpdateType: "AREA_RESTRICTED",
+      safetyHandover: "Panel B access remains restricted pending loose-rock re-inspection.",
+      carrySafetyForward: "yes"
     },
     employeeContext: employeeSnapshot("emp_106004"),
     versions: versions(),

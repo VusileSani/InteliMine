@@ -7,7 +7,12 @@ export const REPORTING_ROLES = Object.freeze({
   ELECTRICIAN: "Electrician",
   SAFETY_OFFICER: "Safety Officer",
   SUPERVISOR: "Supervisor",
-  OPERATOR: "Operator"
+  OPERATOR: "Operator",
+  BLASTING_SUPERVISOR: "Blasting Supervisor",
+  CLEANING_OPERATOR: "Cleaning Operator",
+  HAULAGE_OPERATOR: "Haulage Operator",
+  PLANT_OPERATOR: "Plant Operator",
+  METALLURGIST: "Metallurgist"
 });
 
 export const EMPLOYEE_MASTER_FIELDS = Object.freeze([

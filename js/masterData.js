@@ -36,12 +36,12 @@ export const DEFAULT_EVENT_TYPES = Object.freeze([
   { id: "EVT-MECH-DEFECT", category: "EQUIPMENT", label: "Mechanical defect", requiresEquipment: true, roles: ["FITTER", "OPERATOR"] },
   { id: "EVT-ELECTRICAL-FAULT", category: "ELECTRICAL", label: "Electrical fault / abnormality", requiresEquipment: true, roles: ["ELECTRICIAN"] },
   { id: "EVT-ISOLATION", category: "ELECTRICAL", label: "Isolation / restoration concern", requiresEquipment: false, roles: ["ELECTRICIAN"] },
-  { id: "EVT-HAZARD", category: "SAFETY", label: "Hazard / unsafe condition", requiresEquipment: false, roles: ["SAFETY_OFFICER", "SUPERVISOR", "OPERATOR"] },
-  { id: "EVT-NEAR-MISS", category: "SAFETY", label: "Near miss", requiresEquipment: false, roles: ["SAFETY_OFFICER", "SUPERVISOR"] },
-  { id: "EVT-INCIDENT", category: "SAFETY", label: "Incident", requiresEquipment: false, roles: ["SAFETY_OFFICER", "SUPERVISOR"] },
-  { id: "EVT-PROD-DELAY", category: "OPERATIONS", label: "Production / operational delay", requiresEquipment: false, roles: ["SUPERVISOR", "OPERATOR"] },
-  { id: "EVT-ABNORMAL-CONDITION", category: "OPERATIONS", label: "Abnormal operating condition", requiresEquipment: false, roles: ["SUPERVISOR", "OPERATOR", "FITTER", "ELECTRICIAN"] },
-  { id: "EVT-PEOPLE", category: "PEOPLE", label: "Crew / people constraint", requiresEquipment: false, roles: ["SUPERVISOR"] }
+  { id: "EVT-HAZARD", category: "SAFETY", label: "Hazard / unsafe condition", requiresEquipment: false, roles: ["SAFETY_OFFICER", "SUPERVISOR", "OPERATOR", "BLASTING_SUPERVISOR", "CLEANING_OPERATOR", "HAULAGE_OPERATOR", "PLANT_OPERATOR", "METALLURGIST"] },
+  { id: "EVT-NEAR-MISS", category: "SAFETY", label: "Near miss", requiresEquipment: false, roles: ["SAFETY_OFFICER", "SUPERVISOR", "BLASTING_SUPERVISOR", "CLEANING_OPERATOR", "HAULAGE_OPERATOR", "PLANT_OPERATOR", "METALLURGIST"] },
+  { id: "EVT-INCIDENT", category: "SAFETY", label: "Incident", requiresEquipment: false, roles: ["SAFETY_OFFICER", "SUPERVISOR", "BLASTING_SUPERVISOR", "CLEANING_OPERATOR", "HAULAGE_OPERATOR", "PLANT_OPERATOR", "METALLURGIST"] },
+  { id: "EVT-PROD-DELAY", category: "OPERATIONS", label: "Production / operational delay", requiresEquipment: false, roles: ["SUPERVISOR", "OPERATOR", "BLASTING_SUPERVISOR", "CLEANING_OPERATOR", "HAULAGE_OPERATOR", "PLANT_OPERATOR", "METALLURGIST"] },
+  { id: "EVT-ABNORMAL-CONDITION", category: "OPERATIONS", label: "Abnormal operating condition", requiresEquipment: false, roles: ["SUPERVISOR", "OPERATOR", "FITTER", "ELECTRICIAN", "BLASTING_SUPERVISOR", "CLEANING_OPERATOR", "HAULAGE_OPERATOR", "PLANT_OPERATOR", "METALLURGIST"] },
+  { id: "EVT-PEOPLE", category: "PEOPLE", label: "Crew / people constraint", requiresEquipment: false, roles: ["SUPERVISOR", "BLASTING_SUPERVISOR"] }
 ]);
 
 
@@ -104,9 +104,7 @@ export const SEVERITIES = Object.freeze([
 
 export const ISSUE_STATUSES = Object.freeze([
   { id: "OPEN", label: "Open" },
-  { id: "ACKNOWLEDGED", label: "Acknowledged" },
   { id: "IN_PROGRESS", label: "In progress" },
-  { id: "RESOLVED", label: "Resolved" },
   { id: "CLOSED", label: "Closed" }
 ]);
 

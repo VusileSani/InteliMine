@@ -1,6 +1,6 @@
-import { APP_CONFIG } from "./config.js";
 import { currentShiftObservations, openIssues, reportingEmployees, reportingStatus } from "./domain.js";
 import { LOSS_CATEGORY_LABELS } from "./leadershipData.js";
+import { currentShift } from "./operationalModel.js";
 
 function clampPct(value) {
   if (!Number.isFinite(value)) return 0;
@@ -8,22 +8,33 @@ function clampPct(value) {
 }
 
 export function currentShiftPerformance(state) {
-  const base = (state.shiftPerformance || []).find(item => item.shiftInstanceId === APP_CONFIG.shiftInstanceId) || {};
+  const shift = currentShift(state);
+  const shiftInstanceId = shift?.shiftInstanceId || null;
+  const base = (state.shiftPerformance || []).find(item => item.shiftInstanceId === shiftInstanceId) || {};
   const employees = reportingEmployees(state);
   const complete = employees.filter(employee => reportingStatus(state, employee.id) === "complete").length;
   const handoverCompliancePct = employees.length ? Math.round((complete / employees.length) * 100) : 100;
-  const controls = state.controlVerifications || [];
+  const controls = (state.controlVerifications || []).filter(item => !shiftInstanceId || item.shiftInstanceId === shiftInstanceId);
   const passedControls = controls.filter(item => item.status === "PASS").length;
   const criticalControlConformancePct = controls.length ? Math.round((passedControls / controls.length) * 100) : 100;
   const plannedTonnes = Number(base.plannedTonnes || 0);
   const actualTonnes = Number(base.actualTonnes || 0);
   const planAttainmentPct = plannedTonnes ? Math.round((actualTonnes / plannedTonnes) * 100) : 0;
+  const shiftDelayEvents = (state.delayEvents || []).filter(item => !shiftInstanceId || item.shiftInstanceId === shiftInstanceId);
+  const delayMinutes = shiftDelayEvents.length
+    ? shiftDelayEvents.reduce((total, item) => total + Number(item.minutes || 0), 0)
+    : Number(base.delayMinutes || 0);
 
   return {
     ...base,
+    shiftInstanceId,
+    shiftName: shift?.shiftName || base.shiftName || "",
+    shiftBusinessDate: shift?.businessDate || "",
+    metricSource: base.sourceType || "DEMO_INTEGRATION",
     handoverCompliancePct,
     criticalControlConformancePct,
     planAttainmentPct,
+    delayMinutes,
     shortfallTonnes: Math.max(0, plannedTonnes - actualTonnes),
     completeHandovers: complete,
     requiredHandovers: employees.length,
@@ -56,7 +67,8 @@ function trendDelta(values) {
 
 export function executivePerformance(state) {
   const current = currentShiftPerformance(state);
-  const history = (state.shiftPerformance || []).map(item => item.shiftInstanceId === APP_CONFIG.shiftInstanceId
+  const activeShiftId = current.shiftInstanceId;
+  const history = (state.shiftPerformance || []).map(item => item.shiftInstanceId === activeShiftId
     ? { ...item, handoverCompliancePct: current.handoverCompliancePct, criticalControlConformancePct: current.criticalControlConformancePct }
     : item);
 

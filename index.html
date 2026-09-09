@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MineMind v2.6 · Communication & Mine Identity</title>
+  <title>MineMind v2.8 · Restraint & Continuity</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <div id="mineBrandBanner" class="mine-brand-banner hidden"><span></span></div>
   <header class="topbar">
     <div class="brand-block">
       <div class="brand-title-row"><img class="mine-brand-logo hidden" alt="Mine logo" /><div class="eyebrow">MineMind</div></div>
@@ -25,7 +24,6 @@
         <option value="manager">Mine Manager</option>
         <option value="executive">Mine Executive</option>
         <option value="admin">System Administration</option>
-        <option value="governance">Platform Governance</option>
       </select>
     </label>
   </header>
@@ -63,7 +61,6 @@
         </div>
       </div>
       <div id="managerMessageBoard" class="message-board card compact-card"></div>
-      <div id="managerMessageComposer"></div>
       <div id="managerDashboard"></div>
     </section>
 
@@ -91,18 +88,6 @@
       <div id="adminWorkspace"></div>
     </section>
 
-
-    <section id="governanceView" class="view hidden">
-      <div class="view-header">
-        <div>
-          <div class="eyebrow">Platform Governance</div>
-          <h2>Authority & Access Model</h2>
-          <p class="view-subtitle">Control who administers MineMind and how application authority is labelled and delegated.</p>
-        </div>
-      </div>
-      <div id="governanceMessageBoard" class="message-board card compact-card"></div>
-      <div id="governanceWorkspace"></div>
-    </section>
   </main>
 
   <script type="module" src="js/app.js"></script>

@@ -1,0 +1,2 @@
+assignmentId,shiftInstanceId,employeeId,operationId,areaId,processStageId,workContextId,teamId,teamName,assignedAt,active
+ASN-104782-NS0509,SHIFT-NS-20260905,emp_104782,OP-SITE01,AREA-CONVEYOR,STAGE-HAULAGE,WC-SEC3-HAUL,TEAM-ENG-B,Engineering B,2026-09-05T17:50:00+02:00,true

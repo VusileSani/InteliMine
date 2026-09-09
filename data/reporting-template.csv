@@ -1,0 +1,3 @@
+templateId,roleCode,name,active,fieldKeys,includeCommonSafety,version
+RPT-FITTER,FITTER,FITTER shift handover,true,generalCondition|abnormalNoiseVibration|leaks|defects|maintenanceRequired,true,2.1
+RPT-BLASTING_SUPERVISOR,BLASTING_SUPERVISOR,BLASTING SUPERVISOR shift handover,true,blastAreaCondition|chargingStatus|clearanceStatus|blastConstraint,true,2.1
